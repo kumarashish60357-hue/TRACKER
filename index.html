@@ -3,34 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tracker</title>
+<title>Tracker App</title>
 <style>
-body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f9; margin: 0; }
-.card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 320px; text-align: center; }
-h2 { margin-bottom: 5px; color: #333; }
-p { color: #666; font-size: 14px; margin-bottom: 20px; }
-input { width: 90%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; }
-button { width: 96%; padding: 10px; background-color: #0044ff; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; }
-button:hover { background-color: #0033cc; }
-.toggle-btn { background: none; color: #0044ff; border: none; margin-top: 15px; text-decoration: underline; cursor: pointer; }
+* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+/* Login Box */
+.card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); width: 90%; max-width: 360px; text-align: center; }
+h2 { margin-bottom: 8px; color: #1a1a1a; }
+p { color: #666; font-size: 14px; margin-top: 0; margin-bottom: 20px; }
+input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #e1e4e8; border-radius: 8px; font-size: 14px; outline: none; }
+input:focus { border-color: #0052cc; }
+button { width: 100%; padding: 12px; background-color: #0052cc; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+button:hover { background-color: #003d99; }
+.toggle-btn { background: none; color: #0052cc; border: none; margin-top: 15px; font-size: 14px; cursor: pointer; text-decoration: underline; }
+
+/* Dashboard Screen */
+.dashboard-container { display: none; width: 100%; max-width: 420px; padding: 20px; }
+.header { background: linear-gradient(135deg, #0052cc, #003d99); color: white; padding: 20px; border-radius: 16px; position: relative; margin-bottom: 20px; }
+.user-email { font-size: 13px; opacity: 0.9; margin-bottom: 10px; word-break: break-all; }
+.balance-box { margin-top: 15px; }
+.balance-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+.balance-amount { font-size: 32px; font-weight: bold; margin-top: 4px; }
+
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+.grid-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
+.grid-card h4 { margin: 0 0 5px 0; font-size: 14px; color: #555; }
+.grid-card p { margin: 0; font-size: 18px; font-weight: bold; color: #1a1a1a; }
+
+.section-card { background: white; padding: 18px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+.section-card h3 { margin-top: 0; font-size: 16px; color: #333; }
+.ref-code-box { background: #eef2ff; padding: 10px; border-radius: 8px; font-size: 16px; font-weight: bold; text-align: center; color: #0052cc; border: 1px dashed #0052cc; margin: 10px 0; }
+
+.logout-btn { background-color: #ff3b30; margin-top: 10px; }
+.logout-btn:hover { background-color: #d70015; }
 </style>
 </head>
 <body>
 
-<div class="card">
+<!-- Login / Register Card -->
+<div class="card" id="auth-card">
 <h2 id="form-title">Login</h2>
 <p>Tracker App</p>
 
-<input type="email" id="email" placeholder="Email" required>
+<input type="email" id="email" placeholder="Email Address" required>
 <input type="password" id="password" placeholder="Password" required>
 
 <button id="main-btn">Login</button>
 <button class="toggle-btn" id="toggle-btn">Need an account? Register</button>
 </div>
 
+<!-- Main Dashboard Screen -->
+<div class="dashboard-container" id="dashboard-screen">
+<div class="header">
+<div class="user-email" id="user-display">user@gmail.com</div>
+<div class="balance-box">
+<div class="balance-title">Total Balance</div>
+<div class="balance-amount">₹ <span id="balance-val">150.00</span></div>
+</div>
+</div>
+
+<div class="card-grid">
+<div class="grid-card">
+<h4>Tasks Completed</h4>
+<p id="tasks-count">12</p>
+</div>
+<div class="grid-card">
+<h4>Total Referrals</h4>
+<p id="ref-count">5</p>
+</div>
+</div>
+
+<div class="section-card">
+<h3>Referral Program</h3>
+<p>Share your referral code to earn ₹50 per friend!</p>
+<div class="ref-code-box" id="user-ref-code">REF-89421</div>
+</div>
+
+<button class="logout-btn" id="logout-btn">Logout</button>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyBilxSDUUVefx01qC8hSA5geDqP7VKpVGw",
@@ -47,10 +102,16 @@ const auth = getAuth(app);
 
 let isLogin = true;
 
+const authCard = document.getElementById("auth-card");
+const dashboardScreen = document.getElementById("dashboard-screen");
 const formTitle = document.getElementById("form-title");
 const mainBtn = document.getElementById("main-btn");
 const toggleBtn = document.getElementById("toggle-btn");
+const logoutBtn = document.getElementById("logout-btn");
+const userDisplay = document.getElementById("user-display");
+const userRefCode = document.getElementById("user-ref-code");
 
+// Toggle between Login and Register
 toggleBtn.addEventListener("click", () => {
 isLogin = !isLogin;
 if (isLogin) {
@@ -64,31 +125,44 @@ toggleBtn.innerText = "Already have an account? Login";
 }
 });
 
+// Handle Login / Register click
 mainBtn.addEventListener("click", () => {
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
 if (!email || !password) {
-alert("Please fill in all fields.");
+alert("Please enter both email and password.");
 return;
 }
 
 if (isLogin) {
 signInWithEmailAndPassword(auth, email, password)
-.then((userCredential) => {
-alert("Login Successful! Welcome: " + userCredential.user.email);
-})
-.catch((error) => {
-alert("Login Error: " + error.message);
-});
+.catch((error) => alert("Login Error: " + error.message));
 } else {
 createUserWithEmailAndPassword(auth, email, password)
-.then((userCredential) => {
-alert("Account Created Successfully! You can now login.");
-})
-.catch((error) => {
-alert("Registration Error: " + error.message);
+.then(() => alert("Account Created Successfully!"))
+.catch((error) => alert("Registration Error: " + error.message));
+}
 });
+
+// Handle Logout
+logoutBtn.addEventListener("click", () => {
+signOut(auth);
+});
+
+// Monitor Authentication State
+onAuthStateChanged(auth, (user) => {
+if (user) {
+authCard.style.display = "none";
+dashboardScreen.style.display = "block";
+userDisplay.innerText = user.email;
+
+// Dynamic referral code generation based on UID substring
+const shortId = user.uid.substring(0, 6).toUpperCase();
+userRefCode.innerText = "REF-" + shortId;
+} else {
+authCard.style.display = "block";
+dashboardScreen.style.display = "none";
 }
 });
 </script>
