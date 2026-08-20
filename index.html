@@ -5,87 +5,279 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tracker App</title>
 <style>
-* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background-color: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+* { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+body { background-color: #f4f6f9; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-bottom: 75px; }
 
-/* Login Box */
-.card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); width: 90%; max-width: 360px; text-align: center; }
-h2 { margin-bottom: 8px; color: #1a1a1a; }
-p { color: #666; font-size: 14px; margin-top: 0; margin-bottom: 20px; }
-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #e1e4e8; border-radius: 8px; font-size: 14px; outline: none; }
-input:focus { border-color: #0052cc; }
-button { width: 100%; padding: 12px; background-color: #0052cc; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-button:hover { background-color: #003d99; }
-.toggle-btn { background: none; color: #0052cc; border: none; margin-top: 15px; font-size: 14px; cursor: pointer; text-decoration: underline; }
+/* Auth Containers */
+.auth-container { background: white; padding: 30px 24px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); width: 90%; max-width: 380px; text-align: center; margin-top: 40px; }
+.auth-container h2 { font-size: 22px; color: #1a1a1a; margin-bottom: 6px; }
+.auth-container p { color: #666; font-size: 13px; margin-bottom: 20px; }
+.input-group { text-align: left; margin-bottom: 12px; }
+.input-group label { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
+input { width: 100%; padding: 12px 14px; border: 1px solid #e1e4e8; border-radius: 10px; font-size: 14px; outline: none; background: #fafafa; }
+input:focus { border-color: #0052cc; background: #fff; }
+button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+.toggle-btn { background: none; color: #0052cc; border: none; margin-top: 16px; font-size: 13px; cursor: pointer; text-decoration: underline; }
 
-/* Dashboard Screen */
-.dashboard-container { display: none; width: 100%; max-width: 420px; padding: 20px; }
-.header { background: linear-gradient(135deg, #0052cc, #003d99); color: white; padding: 20px; border-radius: 16px; position: relative; margin-bottom: 20px; }
-.user-email { font-size: 13px; opacity: 0.9; margin-bottom: 10px; word-break: break-all; }
-.balance-box { margin-top: 15px; }
-.balance-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
-.balance-amount { font-size: 32px; font-weight: bold; margin-top: 4px; }
+/* Main App Layout */
+.app-container { display: none; width: 100%; max-width: 440px; }
+.tab-page { display: none; }
+.tab-page.active-page { display: block; }
 
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-.grid-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
-.grid-card h4 { margin: 0 0 5px 0; font-size: 14px; color: #555; }
-.grid-card p { margin: 0; font-size: 18px; font-weight: bold; color: #1a1a1a; }
+/* Common Page Header */
+.app-header { background-color: #0052cc; color: white; padding: 25px 20px 30px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+.app-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.app-header p { font-size: 13px; opacity: 0.9; }
 
-.section-card { background: white; padding: 18px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
-.section-card h3 { margin-top: 0; font-size: 16px; color: #333; }
-.ref-code-box { background: #eef2ff; padding: 10px; border-radius: 8px; font-size: 16px; font-weight: bold; text-align: center; color: #0052cc; border: 1px dashed #0052cc; margin: 10px 0; }
+.content-area { padding: 0 16px; margin-top: -15px; }
+.section-title { font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 20px 0 12px 0; }
 
-.logout-btn { background-color: #ff3b30; margin-top: 10px; }
-.logout-btn:hover { background-color: #d70015; }
+/* Stats Grid */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat-card { background: white; padding: 16px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.stat-label { font-size: 12px; color: #666; margin-bottom: 6px; }
+.stat-value { font-size: 18px; font-weight: 700; color: #1a1a1a; }
+
+/* Quick Actions */
+.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.action-card { background: white; padding: 16px 10px; border-radius: 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; }
+.action-icon { font-size: 22px; margin-bottom: 6px; }
+.action-title { font-size: 12px; font-weight: 600; color: #333; }
+
+/* Product Section */
+.product-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.product-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.product-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+.badge { background: #e6f0ff; color: #0052cc; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+.row-detail { display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #555; }
+.row-detail span.val { font-weight: 700; color: #1a1a1a; }
+.btn-action { width: 100%; padding: 10px; background: #0052cc; color: white; border: none; border-radius: 8px; font-weight: 600; margin-top: 10px; cursor: pointer; }
+
+/* Invite & Team Section */
+.ref-box { background: white; border-radius: 16px; padding: 18px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 15px; }
+.ref-code { font-size: 20px; font-weight: 800; color: #1a1a1a; margin: 10px 0; letter-spacing: 1px; }
+.btn-copy { background: #0052cc; color: white; border: none; padding: 8px 18px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.level-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+.level-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+.level-sub { font-size: 11px; color: #777; margin-top: 2px; }
+
+/* User Profile Section */
+.profile-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.profile-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+.btn-logout { background: #0052cc; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-weight: 600; margin-top: 15px; cursor: pointer; }
+
+/* Bottom Navigation Bar */
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
+.nav-item { text-align: center; color: #8e8e93; font-size: 11px; cursor: pointer; text-decoration: none; width: 25%; }
+.nav-item.active { color: #0052cc; font-weight: 600; }
+.nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
 </style>
 </head>
 <body>
 
-<!-- Login / Register Card -->
-<div class="card" id="auth-card">
+<!-- Authentication Screen (Login / Register) -->
+<div class="auth-container" id="auth-screen">
 <h2 id="form-title">Login</h2>
-<p>Tracker App</p>
+<p id="form-subtitle">Tracker App</p>
 
-<input type="email" id="email" placeholder="Email Address" required>
-<input type="password" id="password" placeholder="Password" required>
+<div class="input-group" id="name-group" style="display: none;">
+<label>Full Name</label>
+<input type="text" id="reg-name" placeholder="Johan Orindo">
+</div>
 
-<button id="main-btn">Login</button>
+<div class="input-group">
+<label>Email Address</label>
+<input type="email" id="email" placeholder="joedoe75@gmail.com" required>
+</div>
+
+<div class="input-group">
+<label>Password</label>
+<input type="password" id="password" placeholder="••••••••" required>
+</div>
+
+<div class="input-group" id="ref-group" style="display: none;">
+<label>Referral Code (Optional)</label>
+<input type="text" id="reg-ref" placeholder="TRK2026">
+</div>
+
+<button class="btn-primary" id="main-btn">Login</button>
 <button class="toggle-btn" id="toggle-btn">Need an account? Register</button>
 </div>
 
-<!-- Main Dashboard Screen -->
-<div class="dashboard-container" id="dashboard-screen">
-<div class="header">
-<div class="user-email" id="user-display">user@gmail.com</div>
-<div class="balance-box">
-<div class="balance-title">Total Balance</div>
-<div class="balance-amount">₹ <span id="balance-val">150.00</span></div>
+<!-- Main App Container -->
+<div class="app-container" id="dashboard-screen">
+
+<!-- HOME TAB -->
+<div id="page-home" class="tab-page active-page">
+<div class="app-header">
+<h1>Tracker</h1>
+<p>Welcome, <span class="user-display-name">Demo User</span> 👋</p>
+</div>
+<div class="content-area">
+<div class="section-title">Dashboard</div>
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-label">Total Income</div>
+<div class="stat-value">₹5,000</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Withdraw</div>
+<div class="stat-value">₹1,500</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Referral</div>
+<div class="stat-value" id="home-ref-count">12</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Deposit</div>
+<div class="stat-value">₹3,000</div>
 </div>
 </div>
 
-<div class="card-grid">
-<div class="grid-card">
-<h4>Tasks Completed</h4>
-<p id="tasks-count">12</p>
+<div class="section-title">Quick Actions</div>
+<div class="actions-grid">
+<div class="action-card" onclick="switchTab('product')">
+<div class="action-icon">📦</div>
+<div class="action-title">My Product</div>
 </div>
-<div class="grid-card">
-<h4>Total Referrals</h4>
-<p id="ref-count">5</p>
+<div class="action-card" onclick="switchTab('team')">
+<div class="action-icon">👥</div>
+<div class="action-title">Invite & Earn</div>
+</div>
+<div class="action-card" onclick="handleAction('Recharge')">
+<div class="action-icon">💳</div>
+<div class="action-title">Recharge</div>
+</div>
+<div class="action-card" onclick="handleAction('Withdrawal')">
+<div class="action-icon">💰</div>
+<div class="action-title">Withdraw</div>
+</div>
+<div class="action-card" onclick="handleAction('Coupon Code')">
+<div class="action-icon">🎟️</div>
+<div class="action-title">Coupon</div>
+</div>
+<div class="action-card" onclick="handleAction('Support Helpdesk')">
+<div class="action-icon">🎧</div>
+<div class="action-title">Support</div>
+</div>
+</div>
 </div>
 </div>
 
-<div class="section-card">
-<h3>Referral Program</h3>
-<p>Share your referral code to earn ₹50 per friend!</p>
-<div class="ref-code-box" id="user-ref-code">REF-89421</div>
+<!-- PRODUCT TAB -->
+<div id="page-product" class="tab-page">
+<div class="app-header">
+<h1>My Product</h1>
+<p>Product earning details</p>
+</div>
+<div class="content-area">
+<div style="height: 20px;"></div>
+<div class="product-card">
+<div class="product-head">
+<div class="product-title">🪑 Chair</div>
+<span class="badge">Active</span>
+</div>
+<div class="row-detail"><span>Price</span><span class="val">₹700</span></div>
+<div class="row-detail"><span>Cycle</span><span class="val">21 Days</span></div>
+<div class="row-detail"><span>Daily Income</span><span class="val">₹90</span></div>
+<div class="row-detail"><span>Total Income</span><span class="val">₹1,890</span></div>
+<button class="btn-action" onclick="alert('Viewing Chair Details')">View Details</button>
 </div>
 
-<button class="logout-btn" id="logout-btn">Logout</button>
+<div class="product-card">
+<div class="product-head">
+<div class="product-title">📦 Goods</div>
+<span class="badge">Active</span>
+</div>
+<div class="row-detail"><span>Price</span><span class="val">₹2,100</span></div>
+<div class="row-detail"><span>Cycle</span><span class="val">31 Days</span></div>
+<div class="row-detail"><span>Daily Income</span><span class="val">₹600</span></div>
+<button class="btn-action" onclick="alert('Viewing Goods Details')">View Details</button>
+</div>
+</div>
+</div>
+
+<!-- TEAM / INVITE TAB -->
+<div id="page-team" class="tab-page">
+<div class="app-header">
+<h1>Invite & Earn</h1>
+<p>Referral levels</p>
+</div>
+<div class="content-area">
+<div style="height: 20px;"></div>
+<div class="ref-box">
+<div style="font-size: 12px; color: #666;">Your Referral Code</div>
+<div class="ref-code" id="user-ref-display">TRK2026</div>
+<button class="btn-copy" onclick="copyRefCode()">Copy Code</button>
+</div>
+
+<div class="level-card">
+<div class="level-title">Level 1 — Direct</div>
+<div class="level-sub">Direct referral से earning</div>
+</div>
+<div class="level-card">
+<div class="level-title">Level 2 — 5%</div>
+<div class="level-sub">Referral network से 5% earning</div>
+</div>
+<div class="level-card">
+<div class="level-title">Level 3 — 3%</div>
+<div class="level-sub">Referral network से 3% earning</div>
+</div>
+
+<div class="product-card" style="margin-top: 15px;">
+<div class="row-detail"><span>Total Members</span><span class="val">12</span></div>
+<div class="row-detail"><span>Referral Income</span><span class="val">₹2,400</span></div>
+</div>
+</div>
+</div>
+
+<!-- USER PROFILE TAB -->
+<div id="page-user" class="tab-page">
+<div class="app-header">
+<h1>User Profile</h1>
+<p>Account details</p>
+</div>
+<div class="content-area">
+<div style="height: 20px;"></div>
+<div class="profile-card">
+<div class="profile-row">
+<span style="color: #666;">Username</span>
+<span class="user-display-name" style="font-weight: 700;">demo_user</span>
+</div>
+<div class="profile-row">
+<span style="color: #666;">Status</span>
+<span style="color: #28a745; font-weight: 700;">Active</span>
+</div>
+<button class="btn-logout" id="logout-btn">Logout</button>
+</div>
+</div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+<div class="nav-item active" onclick="switchTab('home')" id="nav-home">
+<span class="nav-icon">🏠</span>
+<span>Home</span>
+</div>
+<div class="nav-item" onclick="switchTab('product')" id="nav-product">
+<span class="nav-icon">🛍️</span>
+<span>Product</span>
+</div>
+<div class="nav-item" onclick="switchTab('team')" id="nav-team">
+<span class="nav-icon">👥</span>
+<span>Team</span>
+</div>
+<div class="nav-item" onclick="switchTab('user')" id="nav-user">
+<span class="nav-icon">👤</span>
+<span>User</span>
+</div>
+</div>
+
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyBilxSDUUVefx01qC8hSA5geDqP7VKpVGw",
@@ -102,36 +294,44 @@ const auth = getAuth(app);
 
 let isLogin = true;
 
-const authCard = document.getElementById("auth-card");
+const authScreen = document.getElementById("auth-screen");
 const dashboardScreen = document.getElementById("dashboard-screen");
 const formTitle = document.getElementById("form-title");
+const formSubtitle = document.getElementById("form-subtitle");
 const mainBtn = document.getElementById("main-btn");
 const toggleBtn = document.getElementById("toggle-btn");
+const nameGroup = document.getElementById("name-group");
+const refGroup = document.getElementById("ref-group");
 const logoutBtn = document.getElementById("logout-btn");
-const userDisplay = document.getElementById("user-display");
-const userRefCode = document.getElementById("user-ref-code");
 
-// Toggle between Login and Register
+// Toggle between Login and Create Account
 toggleBtn.addEventListener("click", () => {
 isLogin = !isLogin;
 if (isLogin) {
 formTitle.innerText = "Login";
+formSubtitle.innerText = "Tracker App";
 mainBtn.innerText = "Login";
 toggleBtn.innerText = "Need an account? Register";
+nameGroup.style.display = "none";
+refGroup.style.display = "none";
 } else {
-formTitle.innerText = "Register";
-mainBtn.innerText = "Register";
+formTitle.innerText = "Create an Account";
+formSubtitle.innerText = "Sign up to get started";
+mainBtn.innerText = "Create account";
 toggleBtn.innerText = "Already have an account? Login";
+nameGroup.style.display = "block";
+refGroup.style.display = "block";
 }
 });
 
-// Handle Login / Register click
+// Handle Login / Registration
 mainBtn.addEventListener("click", () => {
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
+const name = document.getElementById("reg-name").value;
 
 if (!email || !password) {
-alert("Please enter both email and password.");
+alert("Please fill in email and password.");
 return;
 }
 
@@ -140,31 +340,59 @@ signInWithEmailAndPassword(auth, email, password)
 .catch((error) => alert("Login Error: " + error.message));
 } else {
 createUserWithEmailAndPassword(auth, email, password)
-.then(() => alert("Account Created Successfully!"))
+.then((userCredential) => {
+if (name) {
+updateProfile(userCredential.user, { displayName: name });
+}
+alert("Account Created Successfully!");
+})
 .catch((error) => alert("Registration Error: " + error.message));
 }
 });
 
-// Handle Logout
+// Logout
 logoutBtn.addEventListener("click", () => {
 signOut(auth);
 });
 
-// Monitor Authentication State
+// Auth State Listener
 onAuthStateChanged(auth, (user) => {
 if (user) {
-authCard.style.display = "none";
+authScreen.style.display = "none";
 dashboardScreen.style.display = "block";
-userDisplay.innerText = user.email;
 
-// Dynamic referral code generation based on UID substring
-const shortId = user.uid.substring(0, 6).toUpperCase();
-userRefCode.innerText = "REF-" + shortId;
+const displayName = user.displayName || user.email.split('@')[0];
+document.querySelectorAll(".user-display-name").forEach(el => el.innerText = displayName);
+
+const generatedCode = "TRK" + user.uid.substring(0, 5).toUpperCase();
+document.getElementById("user-ref-display").innerText = generatedCode;
 } else {
-authCard.style.display = "block";
+authScreen.style.display = "block";
 dashboardScreen.style.display = "none";
 }
 });
+
+// Navigation logic
+window.switchTab = function(tabName) {
+document.querySelectorAll(".tab-page").forEach(page => page.classList.remove("active-page"));
+document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
+
+document.getElementById("page-" + tabName).classList.add("active-page");
+document.getElementById("nav-" + tabName).classList.add("active");
+};
+
+window.handleAction = function(actionName) {
+const inputVal = prompt(`Enter details for ${actionName}:`);
+if (inputVal !== null) {
+alert(`${actionName} request submitted!`);
+}
+};
+
+window.copyRefCode = function() {
+const code = document.getElementById("user-ref-display").innerText;
+navigator.clipboard.writeText(code);
+alert("Referral Code Copied: " + code);
+};
 </script>
 
 </body>
