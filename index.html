@@ -3,652 +3,323 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tracker App</title>
+<title>Tracker App Dashboard</title>
 <style>
-* { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-body { background-color: #f4f6f9; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-bottom: 75px; }
+* { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
+body { background-color: #f7faf7; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-bottom: 75px; }
 
-.auth-container { background: white; padding: 30px 24px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); width: 90%; max-width: 380px; text-align: center; margin-top: 40px; }
-.auth-container h2 { font-size: 22px; color: #1a1a1a; margin-bottom: 6px; }
-.auth-container p { color: #666; font-size: 13px; margin-bottom: 20px; }
-.input-group { text-align: left; margin-bottom: 12px; }
-.input-group label { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
-input { width: 100%; padding: 12px 14px; border: 1px solid #e1e4e8; border-radius: 10px; font-size: 14px; outline: none; background: #fafafa; }
-button.btn-primary { width: 100%; padding: 13px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-.toggle-btn { background: none; color: #10b981; border: none; margin-top: 16px; font-size: 13px; cursor: pointer; text-decoration: underline; }
+.app-container { width: 100%; max-width: 440px; background: #f7faf7; }
 
-.app-container { display: none; width: 100%; max-width: 440px; }
-.tab-page { display: none; }
-.tab-page.active-page { display: block; }
+/* Top Green Header with Stats */
+.green-header {
+background: linear-gradient(180deg, #12b836 0%, #10a330 100%);
+color: white;
+padding: 20px 16px 30px 16px;
+}
 
-/* Green Theme Header */
-.app-header { background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 25px 20px 35px 20px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
-.app-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.app-header p { font-size: 13px; opacity: 0.9; }
+.user-profile-bar {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 20px;
+}
 
-.content-area { padding: 0 16px; margin-top: -20px; }
-.section-title { font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 20px 0 12px 0; }
+.avatar-icon {
+width: 45px;
+height: 45px;
+background: #ffb703;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 24px;
+color: white;
+}
 
-/* Green Dashboard Grid */
-.stats-container-green { background: linear-gradient(135deg, #10b981, #059669); border-radius: 18px; padding: 16px; color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); }
-.stats-grid-6 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; text-align: center; }
-.stat-box { background: rgba(255, 255, 255, 0.12); padding: 12px 6px; border-radius: 12px; }
-.stat-box-val { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
-.stat-box-lbl { font-size: 11px; opacity: 0.85; }
+.user-info-text { display: flex; flex-direction: column; }
+.user-phone { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+.user-vip { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 
-.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-.btn-green-action { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 14px; border-radius: 30px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(16,185,129,0.2); text-align: center; }
-.btn-outline-action { background: white; color: #059669; border: 2px solid #10b981; padding: 14px; border-radius: 30px; font-weight: 700; font-size: 14px; cursor: pointer; text-align: center; }
+/* 6 Stats Grid */
+.stats-grid-6 {
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+row-gap: 16px;
+column-gap: 10px;
+text-align: center;
+}
 
-.banner-cashback { background: linear-gradient(135deg, #ff9900, #ff5500); color: white; border-radius: 14px; padding: 12px; margin-top: 15px; font-size: 12px; text-align: center; font-weight: bold; }
+.stat-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+position: relative;
+}
 
-/* Product Cards */
-.product-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-.product-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.product-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
-.badge { background: #e6f0ff; color: #10b981; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
-.badge-active { background: #e6f8e6; color: #28a745; }
-.row-detail { display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #555; }
-.row-detail span.val { font-weight: 700; color: #1a1a1a; }
-.btn-action { width: 100%; padding: 10px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; margin-top: 10px; cursor: pointer; }
-.btn-action:disabled { background: #ccc; cursor: not-allowed; }
+/* Vertical Dividers for grid */
+.stat-item:not(:nth-child(3n)):after {
+content: "";
+position: absolute;
+right: -5px;
+top: 15%;
+height: 70%;
+width: 1px;
+background: rgba(255, 255, 255, 0.3);
+}
 
-/* Profile Details Styling */
-.profile-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 15px; }
-.profile-info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-.profile-info-row:last-child { border-bottom: none; }
-.profile-info-label { color: #666; font-weight: 500; }
-.profile-info-val { font-weight: 700; color: #1a1a1a; }
+.stat-val { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.stat-lbl { font-size: 11px; opacity: 0.85; font-weight: 400; }
 
-.ref-box { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center; margin-top: 15px; }
-.ref-code { font-size: 20px; font-weight: bold; letter-spacing: 2px; color: #10b981; background: #e6f8e6; padding: 10px; border-radius: 10px; margin: 10px 0; display: inline-block; width: 100%; }
+/* Main Content Body */
+.content-body { padding: 0 16px; margin-top: -15px; }
 
-.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; }
-.modal-card { background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; text-align: center; position: relative; }
-.close-modal { position: absolute; right: 15px; top: 15px; font-size: 18px; cursor: pointer; font-weight: bold; }
-.qr-img { width: 180px; height: 180px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; }
+/* White Menu Bar */
+.menu-card {
+background: white;
+border-radius: 12px;
+padding: 15px 10px;
+display: flex;
+justify-content: space-around;
+box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+margin-bottom: 12px;
+}
 
-.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
-.nav-item { text-align: center; color: #8e8e93; font-size: 11px; cursor: pointer; width: 25%; }
-.nav-item.active { color: #10b981; font-weight: 600; }
+.menu-item { text-align: center; cursor: pointer; }
+.menu-icon-bg {
+width: 44px;
+height: 44px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 6px auto;
+font-size: 20px;
+}
+.menu-lbl { font-size: 12px; color: #444; font-weight: 500; }
+
+/* Coral Balance Card */
+.coral-card {
+background: #e8867c;
+border-radius: 12px;
+padding: 16px;
+color: white;
+display: flex;
+justify-content: space-around;
+text-align: center;
+position: relative;
+margin-bottom: 15px;
+}
+
+.coral-card:after {
+content: "";
+position: absolute;
+left: 50%;
+top: 20%;
+height: 60%;
+width: 1px;
+background: rgba(255, 255, 255, 0.4);
+}
+
+.coral-val { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+.coral-lbl { font-size: 11px; opacity: 0.9; }
+
+/* Action Buttons */
+.action-btns { display: flex; gap: 12px; margin-bottom: 20px; }
+.btn-recharge {
+flex: 1;
+padding: 12px;
+border: 1.5px solid #10a330;
+background: white;
+color: #333;
+border-radius: 25px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+}
+
+.btn-withdraw {
+flex: 1;
+padding: 12px;
+border: none;
+background: linear-gradient(135deg, #12b836, #10a330);
+color: white;
+border-radius: 25px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+box-shadow: 0 4px 10px rgba(16, 163, 48, 0.2);
+}
+
+/* List Item Row */
+.list-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+.list-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 16px;
+border-bottom: 1px solid #f0f0f0;
+cursor: pointer;
+}
+.list-row:last-child { border-bottom: none; }
+.list-left { display: flex; align-items: center; gap: 12px; }
+.list-icon-bg {
+width: 32px;
+height: 32px;
+border-radius: 8px;
+background: #eaf8ed;
+color: #10a330;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 16px;
+}
+.list-title { font-size: 14px; color: #333; font-weight: 500; }
+.list-arrow { color: #aaa; font-size: 14px; font-weight: bold; }
+
+/* Bottom Navigation */
+.bottom-nav {
+position: fixed;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+width: 100%;
+max-width: 440px;
+background: white;
+border-top: 1px solid #eaeaea;
+display: flex;
+justify-content: space-around;
+padding: 8px 0;
+}
+.nav-item { text-align: center; color: #888; font-size: 10px; cursor: pointer; flex: 1; }
+.nav-item.active { color: #10a330; }
 .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
-
-/* WhatsApp Support Float Button Styles */
-.whatsapp-float { position: fixed; bottom: 75px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 10px 18px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-decoration: none; font-weight: 600; font-size: 13px; z-index: 150; cursor: pointer; }
-.whatsapp-float:hover { background-color: #1ebc57; }
-.whatsapp-icon { font-size: 18px; }
 </style>
 </head>
 <body>
 
-<div class="auth-container" id="auth-screen">
-<h2 id="form-title">Login</h2>
-<p id="form-subtitle">Tracker App</p>
+<div class="app-container">
 
-<div class="input-group" id="name-group" style="display: none;">
-<label>Full Name</label>
-<input type="text" id="reg-name" placeholder="User Name">
-</div>
-
-<div class="input-group">
-<label>Email Address</label>
-<input type="email" id="email" placeholder="user@gmail.com" required>
-</div>
-
-<div class="input-group">
-<label>Password</label>
-<input type="password" id="password" placeholder="••••••••" required>
-</div>
-
-<div class="input-group" id="ref-group" style="display: none;">
-<label>Referral Code (Optional)</label>
-<input type="text" id="reg-ref" placeholder="Enter Code">
-</div>
-
-<button class="btn-primary" id="main-btn">Login</button>
-<button class="toggle-btn" id="toggle-btn">Need an account? Register</button>
-</div>
-
-<div class="app-container" id="dashboard-screen">
-
-<!-- HOME TAB -->
-<div id="page-home" class="tab-page active-page">
-<div class="app-header">
-<div style="display: flex; justify-content: space-between; align-items: center;">
-<div>
-<h1>Tracker</h1>
-<p>Welcome, <span class="user-display-name">User</span> 👋</p>
-</div>
-<span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">VIP-0</span>
+<!-- GREEN TOP SECTION -->
+<div class="green-header">
+<div class="user-profile-bar">
+<div class="avatar-icon">👤</div>
+<div class="user-info-text">
+<span class="user-phone" id="user-phone">6201082145</span>
+<span class="user-vip" id="user-vip">VIP-0</span>
 </div>
 </div>
 
-<div class="content-area">
-
-<div class="stats-container-green">
+<!-- 6 STATS GRID -->
 <div class="stats-grid-6">
-<div class="stat-box">
-<div class="stat-box-val" id="val-balance">₹0.00</div>
-<div class="stat-box-lbl">Balance</div>
+<div class="stat-item">
+<div class="stat-val" id="val-total-income">725.6</div>
+<div class="stat-lbl">Total income</div>
 </div>
-<div class="stat-box">
-<div class="stat-box-val" id="val-deposit">₹0.00</div>
-<div class="stat-box-lbl">Total Recharge</div>
+<div class="stat-item">
+<div class="stat-val" id="val-total-recharge">4500</div>
+<div class="stat-lbl">Total recharge</div>
 </div>
-<div class="stat-box">
-<div class="stat-box-val" id="val-withdraw">₹0.00</div>
-<div class="stat-box-lbl">Total Withdraw</div>
+<div class="stat-item">
+<div class="stat-val" id="val-total-assets">4500</div>
+<div class="stat-lbl">Total assets</div>
 </div>
+<div class="stat-item">
+<div class="stat-val" id="val-total-withdraw">725</div>
+<div class="stat-lbl">Total withdraw</div>
 </div>
+<div class="stat-item">
+<div class="stat-val" id="val-today-income">91.20</div>
+<div class="stat-lbl">Today's income</div>
 </div>
-
-<div class="actions-grid">
-<button class="btn-outline-action" onclick="openRechargeModal()">Recharge</button>
-<button class="btn-green-action" onclick="openWithdrawModal()">Withdraw</button>
-</div>
-
-<div class="banner-cashback">
-🎁 Offer: Get ₹100 Cashback on Recharge of ₹700 or more!
-</div>
-
-<div class="section-title">Features</div>
-<div class="actions-grid" style="grid-template-columns: 1fr 1fr;">
-<div class="profile-card" style="text-align:center; padding:15px; margin:0; cursor:pointer;" onclick="switchTab('product')">
-<div style="font-size:24px; margin-bottom:4px;">🪙</div>
-<div style="font-size:12px; font-weight:600;">Silver Items</div>
-</div>
-<div class="profile-card" style="text-align:center; padding:15px; margin:0; cursor:pointer;" onclick="switchTab('team')">
-<div style="font-size:24px; margin-bottom:4px;">👥</div>
-<div style="font-size:12px; font-weight:600;">Invite & Earn</div>
-</div>
-</div>
-
-</div>
-</div>
-
-<!-- PRODUCT TAB -->
-<div id="page-product" class="tab-page">
-<div class="app-header">
-<h1>Silver Collection</h1>
-<p>Buy Silver items & earn daily income</p>
-</div>
-<div class="content-area">
-<div style="height: 20px;"></div>
-
-<div class="product-card">
-<div class="product-head">
-<div class="product-title">🔗 Silver Chain</div>
-<span class="badge" id="badge-silver_chain">Not Active</span>
-</div>
-<div class="row-detail"><span>Price</span><span class="val">₹700</span></div>
-<div class="row-detail"><span>Cycle</span><span class="val">21 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹90</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹1,890</span></div>
-<button class="btn-action" id="btn-buy-silver_chain" onclick="buyProduct('silver_chain', 700, 90)">Buy Silver Chain (₹700)</button>
-</div>
-
-<div class="product-card">
-<div class="product-head">
-<div class="product-title">🪙 Silver Coin (10g)</div>
-<span class="badge" id="badge-silver_coin">Not Active</span>
-</div>
-<div class="row-detail"><span>Price</span><span class="val">₹1,200</span></div>
-<div class="row-detail"><span>Cycle</span><span class="val">25 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹180</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹4,500</span></div>
-<button class="btn-action" id="btn-buy-silver_coin" onclick="buyProduct('silver_coin', 1200, 180)">Buy Silver Coin (₹1,200)</button>
-</div>
-
-<div class="product-card">
-<div class="product-head">
-<div class="product-title">📿 Silver Bracelet</div>
-<span class="badge" id="badge-silver_bracelet">Not Active</span>
-</div>
-<div class="row-detail"><span>Price</span><span class="val">₹2,100</span></div>
-<div class="row-detail"><span>Cycle</span><span class="val">31 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹600</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹18,600</span></div>
-<button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 600)">Buy Silver Bracelet (₹2,100)</button>
+<div class="stat-item">
+<div class="stat-val" id="val-team-income">615.6</div>
+<div class="stat-lbl">Team income</div>
 </div>
 </div>
 </div>
 
-<!-- TEAM TAB -->
-<div id="page-team" class="tab-page">
-<div class="app-header">
-<h1>Invite & Earn</h1>
-<p>Share with friends & earn commission</p>
-</div>
-<div class="content-area">
-<div class="ref-box">
-<h3>Your Referral Code</h3>
-<div class="ref-code" id="user-ref-code">GENERATING...</div>
-<button class="btn-primary" onclick="copyReferralLink()">📋 Copy Referral Link</button>
-</div>
+<!-- CONTENT BODY -->
+<div class="content-body">
 
-<div class="section-title">Commission Rates</div>
-<div class="profile-card">
-<div class="profile-info-row">
-<span class="profile-info-label">Level 1 Direct</span>
-<span class="profile-info-val" style="color:#10b981;">10% Commission</span>
+<!-- MENU ICONS CARD -->
+<div class="menu-card">
+<div class="menu-item">
+<div class="menu-icon-bg" style="background: #fff3e0; color: #ff9800;">🛍️</div>
+<div class="menu-lbl">My Product</div>
 </div>
-<div class="profile-info-row">
-<span class="profile-info-label">Level 2 Indirect</span>
-<span class="profile-info-val" style="color:#059669;">5% Commission</span>
+<div class="menu-item">
+<div class="menu-icon-bg" style="background: #ffebee; color: #f44336;">🎟️</div>
+<div class="menu-lbl">Coupons</div>
 </div>
+<div class="menu-item">
+<div class="menu-icon-bg" style="background: #e8f5e9; color: #4caf50;">👥</div>
+<div class="menu-lbl">Invite</div>
 </div>
+<div class="menu-item">
+<div class="menu-icon-bg" style="background: #e3f2fd; color: #2196f3;">💎</div>
+<div class="menu-lbl">VIP</div>
 </div>
 </div>
 
-<!-- USER PROFILE TAB -->
-<div id="page-user" class="tab-page">
-<div class="app-header">
-<h1>User Profile</h1>
-<p>Account & Personal Details</p>
+<!-- CORAL BALANCE CARD -->
+<div class="coral-card">
+<div>
+<div class="coral-val" id="val-card-recharge">225</div>
+<div class="coral-lbl">Recharge</div>
 </div>
-<div class="content-area">
-<div style="height: 10px;"></div>
-
-<div class="profile-card">
-<div class="profile-info-row">
-<span class="profile-info-label">Account Holder Name</span>
-<span class="profile-info-val user-display-name">User</span>
-</div>
-<div class="profile-info-row">
-<span class="profile-info-label">Email ID</span>
-<span class="profile-info-val" id="profile-email">loading...</span>
-</div>
-<div class="profile-info-row">
-<span class="profile-info-label">VIP Level</span>
-<span class="profile-info-val" style="color:#10b981;">VIP-0</span>
-</div>
-<div class="profile-info-row">
-<span class="profile-info-label">Referral Code</span>
-<span class="profile-info-val" id="profile-ref-code">...</span>
+<div>
+<div class="coral-val" id="val-card-balance">0.6</div>
+<div class="coral-lbl">Balance</div>
 </div>
 </div>
 
-<div class="profile-card">
-<div class="profile-info-row">
-<span class="profile-info-label">Total Assets Balance</span>
-<span class="profile-info-val" id="profile-bal">₹0.00</span>
+<!-- RECHARGE & WITHDRAW BUTTONS -->
+<div class="action-btns">
+<button class="btn-recharge">Recharge</button>
+<button class="btn-withdraw">Withdraw</button>
 </div>
-<div class="profile-info-row">
-<span class="profile-info-label">Total Recharge</span>
-<span class="profile-info-val" id="profile-recharge">₹0.00</span>
+
+<!-- LIST ITEMS -->
+<div class="list-container">
+<div class="list-row">
+<div class="list-left">
+<div class="list-icon-bg">🔄</div>
+<span class="list-title">Transaction</span>
 </div>
-<div class="profile-info-row">
-<span class="profile-info-label">Total Withdraw</span>
-<span class="profile-info-val" id="profile-withdraw">₹0.00</span>
+<span class="list-arrow">＞</span>
 </div>
-<div class="profile-info-row">
-<span class="profile-info-label">Total Referrals Joined</span>
-<span class="profile-info-val" id="profile-ref-count">0</span>
+<div class="list-row">
+<div class="list-left">
+<div class="list-icon-bg">🎮</div>
+<span class="list-title">Game</span>
+</div>
+<span class="list-arrow">＞</span>
 </div>
 </div>
 
-<div class="profile-card" style="text-align: center; cursor: pointer; color:#25d366;" onclick="openWhatsAppSupport()">
-💬 <strong>Contact Customer Support</strong>
 </div>
 
-<button class="btn-primary" style="background:#dc3545;" id="logout-btn">Logout Account</button>
-</div>
-</div>
-
-<!-- WhatsApp Floating Support Button -->
-<a href="https://wa.me/918092703164?text=Hello%20Support,%20I%20need%20help%20with%20Tracker%20App" target="_blank" class="whatsapp-float">
-<span class="whatsapp-icon">💬</span>
-<span>Support</span>
-</a>
-
+<!-- BOTTOM NAVIGATION -->
 <div class="bottom-nav">
-<div class="nav-item active" onclick="switchTab('home')" id="nav-home">
+<div class="nav-item">
 <span class="nav-icon">🏠</span>
 <span>Home</span>
 </div>
-<div class="nav-item" onclick="switchTab('product')" id="nav-product">
+<div class="nav-item">
 <span class="nav-icon">🪙</span>
 <span>Silver</span>
 </div>
-<div class="nav-item" onclick="switchTab('team')" id="nav-team">
+<div class="nav-item">
 <span class="nav-icon">👥</span>
 <span>Team</span>
 </div>
-<div class="nav-item" onclick="switchTab('user')" id="nav-user">
+<div class="nav-item active">
 <span class="nav-icon">👤</span>
 <span>User</span>
 </div>
 </div>
 
 </div>
-
-<!-- RECHARGE MODAL -->
-<div class="modal-overlay" id="recharge-modal">
-<div class="modal-card">
-<span class="close-modal" onclick="closeRechargeModal()">✕</span>
-<h3>Deposit / Recharge</h3>
-<p style="font-size:12px; color:#666; margin-top:4px;">Recharge ₹700+ to get ₹100 Cashback!</p>
-
-<div class="input-group" style="margin-top:10px;">
-<label>Enter Amount (₹)</label>
-<input type="number" id="deposit-amount" placeholder="e.g. 700" oninput="updateQRCode()">
-</div>
-
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=ashishkumarstudent75620@paytm&pn=TrackerApp" id="qr-code-img" class="qr-img">
-
-<p style="font-size:11px; color:#333; font-weight:600;">UPI ID: ashishkumarstudent75620@paytm</p>
-
-<div class="input-group" style="margin-top:10px;">
-<label>12-Digit UTR / Transaction ID</label>
-<input type="text" id="deposit-utr" placeholder="e.g. 4021XXXXXXXX">
-</div>
-
-<button class="btn-primary" onclick="submitRechargeRequest()">Submit Payment</button>
-</div>
-</div>
-
-<!-- WITHDRAW MODAL -->
-<div class="modal-overlay" id="withdraw-modal">
-<div class="modal-card">
-<span class="close-modal" onclick="closeWithdrawModal()">✕</span>
-<h3>Request Withdrawal</h3>
-<p style="font-size:12px; color:#666; margin-top:4px;">Enter payout details</p>
-
-<div class="input-group" style="margin-top:10px;">
-<label>Withdrawal Amount (₹)</label>
-<input type="number" id="withdraw-amt" placeholder="e.g. 200">
-</div>
-
-<div class="input-group">
-<label>UPI ID (or Bank Account No + IFSC)</label>
-<input type="text" id="withdraw-upi" placeholder="e.g. 9876543210@paytm">
-</div>
-
-<button class="btn-primary" onclick="submitWithdrawRequest()">Submit Withdrawal</button>
-</div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyBilxSDUUVefx01qC8hSA5geDqP7VKpVGw",
-authDomain: "tracker-9e0b3.firebaseapp.com",
-projectId: "tracker-9e0b3",
-storageBucket: "tracker-9e0b3.firebasestorage.app",
-messagingSenderId: "542021217929",
-appId: "1:542021217929:web:28c3a446b74fea61ff6058"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let currentUser = null;
-let userData = {};
-let isLogin = true;
-
-const authScreen = document.getElementById("auth-screen");
-const dashboardScreen = document.getElementById("dashboard-screen");
-const formTitle = document.getElementById("form-title");
-const mainBtn = document.getElementById("main-btn");
-const toggleBtn = document.getElementById("toggle-btn");
-const nameGroup = document.getElementById("name-group");
-const refGroup = document.getElementById("ref-group");
-
-toggleBtn.addEventListener("click", () => {
-isLogin = !isLogin;
-formTitle.innerText = isLogin ? "Login" : "Create Account";
-mainBtn.innerText = isLogin ? "Login" : "Create account";
-toggleBtn.innerText = isLogin ? "Need an account? Register" : "Already have an account? Login";
-nameGroup.style.display = isLogin ? "none" : "block";
-refGroup.style.display = isLogin ? "none" : "block";
-});
-
-mainBtn.addEventListener("click", () => {
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-const name = document.getElementById("reg-name").value;
-const refCode = document.getElementById("reg-ref").value.trim().toUpperCase();
-
-if (!email || !password) return alert("Fill all required fields");
-
-if (isLogin) {
-signInWithEmailAndPassword(auth, email, password).catch(e => alert(e.message));
-} else {
-createUserWithEmailAndPassword(auth, email, password)
-.then(async (res) => {
-const myRefCode = "TRK" + Math.floor(1000 + Math.random() * 9000);
-
-await setDoc(doc(db, "users", res.user.uid), {
-name: name || "User",
-email: email,
-balance: 0,
-deposit: 0,
-withdraw: 0,
-referrals: 0,
-referralCode: myRefCode,
-referredBy: refCode || null,
-activeProducts: {}
-});
-
-if (refCode) {
-const q = query(collection(db, "users"), where("referralCode", "==", refCode));
-const querySnap = await getDocs(q);
-querySnap.forEach(async (docRef) => {
-const inviter = docRef.data();
-await updateDoc(doc(db, "users", docRef.id), {
-referrals: (inviter.referrals || 0) + 1
-});
-});
-}
-
-}).catch(e => alert(e.message));
-}
-});
-
-document.getElementById("logout-btn").addEventListener("click", () => signOut(auth));
-
-onAuthStateChanged(auth, (user) => {
-if (user) {
-currentUser = user;
-authScreen.style.display = "none";
-dashboardScreen.style.display = "block";
-
-onSnapshot(doc(db, "users", user.uid), (docSnap) => {
-if (docSnap.exists()) {
-userData = docSnap.data();
-
-// Dashboard Updates
-document.querySelectorAll(".user-display-name").forEach(e => e.innerText = userData.name || "User");
-document.getElementById("val-balance").innerText = "₹" + (userData.balance || 0);
-document.getElementById("val-deposit").innerText = "₹" + (userData.deposit || 0);
-document.getElementById("val-withdraw").innerText = "₹" + (userData.withdraw || 0);
-document.getElementById("user-ref-code").innerText = userData.referralCode || "TRK1234";
-
-// User Profile Page Specific Updates
-document.getElementById("profile-email").innerText = userData.email || currentUser.email;
-document.getElementById("profile-ref-code").innerText = userData.referralCode || "TRK1234";
-document.getElementById("profile-bal").innerText = "₹" + (userData.balance || 0);
-document.getElementById("profile-recharge").innerText = "₹" + (userData.deposit || 0);
-document.getElementById("profile-withdraw").innerText = "₹" + (userData.withdraw || 0);
-document.getElementById("profile-ref-count").innerText = userData.referrals || 0;
-
-checkAndAddDailyEarnings();
-updateProductUI();
-}
-});
-} else {
-authScreen.style.display = "block";
-dashboardScreen.style.display = "none";
-}
-});
-
-async function checkAndAddDailyEarnings() {
-if (!userData.activeProducts) return;
-
-let updatedBalance = userData.balance || 0;
-let modified = false;
-const now = Date.now();
-const activeProds = { ...userData.activeProducts };
-
-for (let prodKey in activeProds) {
-let prod = activeProds[prodKey];
-if (prod.active) {
-let lastClaim = prod.lastClaimTime || prod.buyTime;
-let timePassed = now - lastClaim;
-let oneDayInMs = 24 * 60 * 60 * 1000;
-
-if (timePassed >= oneDayInMs) {
-let daysEarned = Math.floor(timePassed / oneDayInMs);
-let earningToAdd = daysEarned * prod.dailyRate;
-
-updatedBalance += earningToAdd;
-prod.lastClaimTime = lastClaim + (daysEarned * oneDayInMs);
-modified = true;
-alert(`🎉 Daily Income Claimed: ₹${earningToAdd}`);
-}
-}
-}
-
-if (modified) {
-await updateDoc(doc(db, "users", currentUser.uid), {
-balance: updatedBalance,
-activeProducts: activeProds
-});
-}
-}
-
-function updateProductUI() {
-const prods = userData.activeProducts || {};
-const items = ['silver_chain', 'silver_coin', 'silver_bracelet'];
-items.forEach(item => {
-if (prods[item] && prods[item].active) {
-const badge = document.getElementById(`badge-${item}`);
-const btn = document.getElementById(`btn-buy-${item}`);
-if(badge) {
-badge.innerText = "Active";
-badge.classList.add("badge-active");
-}
-if(btn) {
-btn.innerText = "Already Purchased";
-btn.disabled = true;
-}
-}
-});
-}
-
-window.buyProduct = async (prodKey, price, dailyRate) => {
-if ((userData.balance || 0) < price) {
-return alert(`Insufficient Balance! Please Recharge ₹${price - (userData.balance || 0)} first.`);
-}
-
-if (confirm(`Do you want to buy for ₹${price}?`)) {
-let newBalance = userData.balance - price;
-let activeProducts = userData.activeProducts || {};
-
-activeProducts[prodKey] = {
-active: true,
-buyTime: Date.now(),
-lastClaimTime: Date.now(),
-dailyRate: dailyRate
-};
-
-await updateDoc(doc(db, "users", currentUser.uid), {
-balance: newBalance,
-activeProducts: activeProducts
-});
-
-alert("Item purchased successfully!");
-}
-};
-
-window.openRechargeModal = () => document.getElementById("recharge-modal").style.display = "flex";
-window.closeRechargeModal = () => document.getElementById("recharge-modal").style.display = "none";
-window.updateQRCode = () => {
-const amt = document.getElementById("deposit-amount").value || 0;
-const myUPI = "ashishkumarstudent75620@paytm";
-document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${myUPI}&pn=TrackerApp&am=${amt}&cu=INR`;
-};
-
-window.submitRechargeRequest = async () => {
-const amt = parseFloat(document.getElementById("deposit-amount").value);
-const utr = document.getElementById("deposit-utr").value.trim();
-
-if (!amt || amt <= 0) return alert("Enter valid amount");
-if (!utr || utr.length < 6) return alert("Enter valid UTR / Transaction ID");
-
-let cashbackBonus = (amt >= 700) ? 100 : 0;
-
-try {
-await addDoc(collection(db, "recharges"), {
-userId: currentUser.uid,
-userEmail: currentUser.email,
-amount: amt,
-cashbackBonus: cashbackBonus,
-utr: utr,
-status: "pending",
-timestamp: new Date()
-});
-
-alert("Payment request submitted!");
-closeRechargeModal();
-} catch (e) {
-alert("Error: " + e.message);
-}
-};
-
-window.openWithdrawModal = () => document.getElementById("withdraw-modal").style.display = "flex";
-window.closeWithdrawModal = () => document.getElementById("withdraw-modal").style.display = "none";
-
-window.submitWithdrawRequest = async () => {
-const amt = parseFloat(document.getElementById("withdraw-amt").value);
-const upi = document.getElementById("withdraw-upi").value.trim();
-
-if (!amt || amt <= 0) return alert("Enter valid amount");
-if (amt > (userData.balance || 0)) return alert("Insufficient Balance!");
-if (!upi) return alert("Enter valid UPI ID or Bank Details");
-
-try {
-let newBalance = userData.balance - amt;
-await updateDoc(doc(db, "users", currentUser.uid), { balance: newBalance });
-
-await addDoc(collection(db, "withdrawals"), {
-userId: currentUser.uid,
-userEmail: currentUser.email,
-amount: amt,
-payoutDetails: upi,
-status: "pending",
-timestamp: new Date()
-});
-
-alert("Withdrawal request submitted successfully!");
-closeWithdrawModal();
-} catch (e) {
-alert("Error: " + e.message);
-}
-};
-
-window.copyReferralLink = () => {
-const code = userData.referralCode || "";
-const link = window.location.origin + window.location.pathname + "?ref=" + code;
-navigator.clipboard.writeText(link);
-alert("Referral Link Copied: " + link);
-};
-
-window.openWhatsAppSupport = () => {
-window.open("https://wa.me/918092703164?text=Hello%20Support,%20I%20need%20help%20with%20Tracker%20App", "_blank");
-};
-
-window.switchTab = function(tab) {
-document.querySelectorAll(".tab-page").forEach(p => p.classList.remove("active-page"));
-document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-document.getElementById("page-" + tab).classList.add("active-page");
-document.getElementById("nav-" + tab).classList.add("active");
-};
-</script>
 
 </body>
 </html>
