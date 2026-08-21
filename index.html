@@ -25,14 +25,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 .tab-page { display: none; }
 .tab-page.active-page { display: block; }
 
-/* GREEN HEADER & USER PROFILE */
-.app-header {
-background: linear-gradient(180deg, #12b836 0%, #10a330 100%);
-color: white;
-padding: 25px 20px 35px 20px;
-border-bottom-left-radius: 20px;
-border-bottom-right-radius: 20px;
-}
+.app-header { background: linear-gradient(180deg, #12b836 0%, #10a330 100%); color: white; padding: 25px 20px 35px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
 .user-profile-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
 .user-profile-left { display: flex; align-items: center; gap: 12px; }
 .avatar-icon { width: 45px; height: 45px; background: #ffb703; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; }
@@ -42,23 +35,18 @@ border-bottom-right-radius: 20px;
 
 .content-area { padding: 0 16px; margin-top: -20px; }
 .section-title { font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 20px 0 12px 0; }
-
-/* CORAL OFFER BANNER */
 .banner-cashback { background: #e8867c; color: white; border-radius: 14px; padding: 14px; margin-bottom: 15px; font-size: 13px; text-align: center; font-weight: bold; box-shadow: 0 4px 10px rgba(232, 134, 124, 0.2); }
 
-/* DASHBOARD STATS GRID */
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .stat-card { background: white; padding: 16px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
 .stat-label { font-size: 12px; color: #666; margin-bottom: 6px; }
 .stat-value { font-size: 18px; font-weight: 700; color: #10a330; }
 
-/* QUICK ACTIONS */
 .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .action-card { background: white; padding: 16px 10px; border-radius: 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); cursor: pointer; }
 .action-icon { font-size: 22px; margin-bottom: 6px; }
 .action-title { font-size: 12px; font-weight: 600; color: #333; }
 
-/* PRODUCT CARDS */
 .product-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
 .product-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .product-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
@@ -69,23 +57,19 @@ border-bottom-right-radius: 20px;
 .btn-action { width: 100%; padding: 11px; background: #10a330; color: white; border: none; border-radius: 10px; font-weight: 600; margin-top: 10px; cursor: pointer; }
 .btn-action:disabled { background: #ccc; cursor: not-allowed; }
 
-/* REFERRAL BOX */
 .ref-box { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-align: center; margin-top: 15px; }
 .ref-code { font-size: 20px; font-weight: bold; letter-spacing: 2px; color: #10a330; background: #eaf8ed; padding: 10px; border-radius: 10px; margin: 10px 0; display: inline-block; width: 100%; }
 
-/* MODALS / POPUPS */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; }
 .modal-card { background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; text-align: center; position: relative; }
 .close-modal { position: absolute; right: 15px; top: 15px; font-size: 18px; cursor: pointer; font-weight: bold; color: #888; }
 .qr-img { width: 180px; height: 180px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; }
 
-/* BOTTOM NAVIGATION */
-.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; background: white; border-top: 1px solid #eee; display: flex; justify-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
 .nav-item { text-align: center; color: #8e8e93; font-size: 11px; cursor: pointer; width: 25%; }
 .nav-item.active { color: #10a330; font-weight: 600; }
 .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
 
-/* WHATSAPP FLOAT BUTTON */
 .whatsapp-float { position: fixed; bottom: 75px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 10px 18px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-decoration: none; font-weight: 600; font-size: 13px; z-index: 150; cursor: pointer; }
 .whatsapp-float:hover { background-color: #1ebc57; }
 .whatsapp-icon { font-size: 18px; }
@@ -98,6 +82,8 @@ border-bottom-right-radius: 20px;
 <h2 id="form-title">Login</h2>
 <p id="form-subtitle">Tracker App</p>
 
+<!-- NORMAL LOGIN / REGISTER FORM -->
+<div id="standard-auth-box">
 <div class="input-group" id="name-group" style="display: none;">
 <label>Full Name</label>
 <input type="text" id="reg-name" placeholder="User Name">
@@ -125,7 +111,29 @@ border-bottom-right-radius: 20px;
 
 <button class="btn-primary" id="main-btn">Login</button>
 <button class="toggle-btn" id="toggle-btn">Need an account? Register</button>
-<button class="forgot-btn" id="forgot-btn" onclick="handleForgotPassword()">Forgot Password?</button>
+<button class="forgot-btn" id="forgot-btn" onclick="showOTPResetView()">Forgot Password via Mobile OTP?</button>
+</div>
+
+<!-- OTP FORGOT PASSWORD BOX -->
+<div id="otp-reset-box" style="display: none;">
+<div class="input-group">
+<label>Registered Mobile Number</label>
+<input type="tel" id="otp-phone" placeholder="e.g. 9876543210">
+</div>
+
+<div id="recaptcha-container"></div>
+
+<button class="btn-primary" id="send-otp-btn" onclick="sendMobileOTP()">Send OTP</button>
+
+<div class="input-group" id="otp-input-group" style="display: none; margin-top: 12px;">
+<label>Enter 6-Digit OTP</label>
+<input type="number" id="otp-code" placeholder="123456">
+<button class="btn-primary" style="margin-top:8px; background:#1a1a1a;" onclick="verifyMobileOTP()">Verify & Login</button>
+</div>
+
+<button class="toggle-btn" onclick="hideOTPResetView()">Back to Login</button>
+</div>
+
 </div>
 
 <!-- DASHBOARD MAIN CONTAINER -->
@@ -363,7 +371,7 @@ border-bottom-right-radius: 20px;
 <!-- FIREBASE SYSTEM & LOGIC -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -382,13 +390,13 @@ const db = getFirestore(app);
 let currentUser = null;
 let userData = {};
 let isLogin = true;
+let confirmationResult = null;
 
 const authScreen = document.getElementById("auth-screen");
 const dashboardScreen = document.getElementById("dashboard-screen");
 const formTitle = document.getElementById("form-title");
 const mainBtn = document.getElementById("main-btn");
 const toggleBtn = document.getElementById("toggle-btn");
-const forgotBtn = document.getElementById("forgot-btn");
 const nameGroup = document.getElementById("name-group");
 const phoneGroup = document.getElementById("phone-group");
 const refGroup = document.getElementById("ref-group");
@@ -401,7 +409,6 @@ toggleBtn.innerText = isLogin ? "Need an account? Register" : "Already have an a
 nameGroup.style.display = isLogin ? "none" : "block";
 phoneGroup.style.display = isLogin ? "none" : "block";
 refGroup.style.display = isLogin ? "none" : "block";
-forgotBtn.style.display = isLogin ? "block" : "none";
 });
 
 mainBtn.addEventListener("click", () => {
@@ -450,18 +457,52 @@ referrals: (inviter.referrals || 0) + 1
 }
 });
 
-window.handleForgotPassword = () => {
-const email = document.getElementById("email").value.trim();
-if (!email) {
-return alert("Please enter your Registered Email Address first to reset password.");
-}
+// MOBILE OTP RESET LOGIC
+window.showOTPResetView = () => {
+document.getElementById("standard-auth-box").style.display = "none";
+document.getElementById("otp-reset-box").style.display = "block";
+formTitle.innerText = "Reset via OTP";
 
-sendPasswordResetEmail(auth, email)
-.then(() => {
-alert("Password Reset Link sent to your Email! Check your inbox.");
+if (!window.recaptchaVerifier) {
+window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+'size': 'invisible'
+});
+}
+};
+
+window.hideOTPResetView = () => {
+document.getElementById("standard-auth-box").style.display = "block";
+document.getElementById("otp-reset-box").style.display = "none";
+formTitle.innerText = isLogin ? "Login" : "Create Account";
+};
+
+window.sendMobileOTP = () => {
+let phoneNum = document.getElementById("otp-phone").value.trim();
+if (!phoneNum.startsWith("+")) phoneNum = "+91" + phoneNum;
+
+if (phoneNum.length < 12) return alert("Please enter 10-digit phone number");
+
+const appVerifier = window.recaptchaVerifier;
+signInWithPhoneNumber(auth, phoneNum, appVerifier)
+.then((result) => {
+confirmationResult = result;
+alert("OTP Sent to your Mobile Number!");
+document.getElementById("otp-input-group").style.display = "block";
 })
 .catch((error) => {
-alert("Error: " + error.message);
+alert("Failed to send OTP: " + error.message);
+});
+};
+
+window.verifyMobileOTP = () => {
+const code = document.getElementById("otp-code").value.trim();
+if (!code || code.length !== 6) return alert("Enter 6-digit OTP code");
+
+confirmationResult.confirm(code).then((result) => {
+alert("Mobile Verified Successfully! You are logged in.");
+hideOTPResetView();
+}).catch((error) => {
+alert("Invalid OTP Code!");
 });
 };
 
