@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -16,16 +16,25 @@ body { background-color: #f7faf7; display: flex; justify-content: center; align-
 .input-group label { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
 input { width: 100%; padding: 12px 14px; border: 1px solid #e1e4e8; border-radius: 10px; font-size: 14px; outline: none; background: #fafafa; }
 input:focus { border-color: #10a330; }
+
+.otp-row { display: flex; gap: 8px; }
+.otp-row input { flex: 1; }
+.btn-otp { padding: 0 14px; background: #17a2b8; color: white; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.btn-otp:hover { background: #138496; }
+
 button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
 button.btn-outline { width: 100%; padding: 13px; background-color: transparent; color: #10a330; border: 1px solid #10a330; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
-.toggle-btn { background: none; color: #10a330; border: none; margin-top: 16px; font-size: 13px; cursor: pointer; text-decoration: underline; }
+.toggle-btn { background: none; color: #10a330; border: none; margin-top: 14px; font-size: 13px; cursor: pointer; text-decoration: underline; }
+
+.forgot-link { text-align: right; margin-top: 4px; margin-bottom: 8px; }
+.forgot-link a { color: #007bff; text-decoration: none; font-size: 12px; }
+.forgot-link a:hover { text-decoration: underline; }
 
 /* APP DASHBOARD STYLES */
 .app-container { display: none; width: 100%; max-width: 440px; }
 .tab-page { display: none; }
 .tab-page.active-page { display: block; }
 
-/* NEW GREEN HEADER BASED ON SCREENSHOT */
 .app-header {
 background: #11c039;
 color: white;
@@ -40,7 +49,6 @@ position: relative;
 .user-phone { font-size: 16px; font-weight: bold; }
 .user-vip { font-size: 11px; opacity: 0.9; }
 
-/* SIX GRID STATS IN HEADER */
 .header-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; margin-bottom: 10px;}
 .h-stat-box { display: flex; flex-direction: column; }
 .h-stat-val { font-size: 16px; font-weight: bold; }
@@ -49,25 +57,21 @@ position: relative;
 
 .content-area { padding: 0 15px; margin-top: -15px; position: relative; z-index: 10; }
 
-/* QUICK MENU CARDS (My Product, Coupons, Invite) */
 .quick-menu { background: white; border-radius: 12px; padding: 15px; display: flex; justify-content: space-around; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
 .qm-item { text-align: center; cursor: pointer; }
 .qm-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px auto; font-size: 20px; background: #f0f0f0; }
 .qm-lbl { font-size: 11px; color: #444; font-weight: 500; }
 
-/* CORAL BALANCE CARD */
 .balance-card { background: #e8867c; color: white; border-radius: 12px; padding: 15px; display: flex; justify-content: space-around; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(232, 134, 124, 0.2); }
 .bal-box { width: 50%; }
 .bal-val { font-size: 18px; font-weight: bold; }
 .bal-lbl { font-size: 11px; opacity: 0.9; }
 .bal-divider { width: 1px; background: rgba(255,255,255,0.4); }
 
-/* ACTION BUTTONS ROW (Recharge & Withdraw) */
 .action-btn-row { display: flex; gap: 10px; margin-bottom: 20px; }
 .btn-recharge { flex: 1; padding: 12px; background: white; border: 1px solid #10a330; color: #10a330; border-radius: 25px; text-align: center; font-weight: bold; font-size: 14px; cursor: pointer; }
 .btn-withdraw { flex: 1; padding: 12px; background: #10a330; border: 1px solid #10a330; color: white; border-radius: 25px; text-align: center; font-weight: bold; font-size: 14px; cursor: pointer; }
 
-/* LIST MENU (Transaction, Game) */
 .list-menu { background: white; border-radius: 12px; padding: 0 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
 .list-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
 .list-item:last-child { border-bottom: none; }
@@ -75,7 +79,6 @@ position: relative;
 .li-icon { width: 30px; height: 30px; background: #eaf8ed; color: #10a330; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
 .li-arrow { color: #aaa; }
 
-/* TRANSACTION HISTORY LIST (Based on image_5) */
 .txn-list { margin-top: 15px; }
 .txn-card { background: white; border-bottom: 1px solid #eee; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
 .txn-card:first-child { border-top-left-radius: 12px; border-top-right-radius: 12px; }
@@ -86,7 +89,6 @@ position: relative;
 .txn-amt.positive { color: #10a330; }
 .txn-amt.negative { color: #dc3545; }
 
-/* PRODUCT CARDS */
 .product-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
 .product-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .product-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
@@ -107,7 +109,6 @@ position: relative;
 .nav-item.active { color: #10a330; font-weight: 600; }
 .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
 
-/* WHATSAPP FLOAT BUTTON */
 .whatsapp-float { position: fixed; bottom: 75px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 10px 18px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-decoration: none; font-weight: 600; font-size: 13px; z-index: 150; cursor: pointer; }
 </style>
 </head>
@@ -118,9 +119,19 @@ position: relative;
 <h2 id="form-title">Login</h2>
 <p id="form-subtitle">Tracker App Dashboard</p>
 
-<div class="input-group" id="name-group" style="display: none;">
-<label>Phone Number / Name</label>
-<input type="text" id="reg-name" placeholder="Enter Mobile Number">
+<!-- PHONE NUMBER (USERNAME) -->
+<div class="input-group">
+<label id="phone-label">Phone Number (Username)</label>
+<div class="otp-row">
+<input type="tel" id="reg-name" placeholder="Enter Mobile Number" pattern="[0-9]{10}" required>
+<button type="button" class="btn-otp" id="btn-send-otp" style="display: none;" onclick="sendOTP('reg-name')">Get OTP</button>
+</div>
+</div>
+
+<!-- OTP INPUT (Only Visible on Register) -->
+<div class="input-group" id="otp-group" style="display: none;">
+<label>Enter OTP</label>
+<input type="text" id="reg-otp" placeholder="Enter OTP (Demo: 1234)" maxlength="6">
 </div>
 
 <div class="input-group">
@@ -133,6 +144,11 @@ position: relative;
 <input type="password" id="password" placeholder="••••••••" required>
 </div>
 
+<!-- FORGOT PASSWORD LINK -->
+<div class="forgot-link">
+<a href="#" onclick="openForgotModal()">Forgot Password?</a>
+</div>
+
 <div class="input-group" id="ref-group" style="display: none;">
 <label>Referral Code (Optional)</label>
 <input type="text" id="reg-ref" placeholder="Enter Code">
@@ -142,10 +158,38 @@ position: relative;
 <button class="toggle-btn" id="toggle-btn">Need an account? Register</button>
 </div>
 
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgot-modal">
+<div class="modal-card">
+<span class="close-modal" onclick="closeForgotModal()">✕</span>
+<h3 style="margin-bottom: 15px;">Reset Password</h3>
+
+<div class="input-group">
+<label>Registered Phone Number</label>
+<div class="otp-row">
+<input type="tel" id="reset-phone" placeholder="Enter Mobile Number" pattern="[0-9]{10}">
+<button type="button" class="btn-otp" onclick="sendOTP('reset-phone')">Get OTP</button>
+</div>
+</div>
+
+<div class="input-group">
+<label>Enter OTP</label>
+<input type="text" id="reset-otp" placeholder="Enter OTP (Demo: 1234)" maxlength="6">
+</div>
+
+<div class="input-group">
+<label>New Password</label>
+<input type="password" id="reset-new-password" placeholder="Enter New Password">
+</div>
+
+<button class="btn-primary" onclick="handleResetPassword()">Reset Password</button>
+</div>
+</div>
+
 <!-- DASHBOARD MAIN CONTAINER -->
 <div class="app-container" id="dashboard-screen">
 
-<!-- TAB: HOME / DASHBOARD (Based on Image 6) -->
+<!-- TAB: HOME / DASHBOARD -->
 <div id="page-home" class="tab-page active-page">
 <div class="app-header">
 <div class="user-profile-bar">
@@ -237,14 +281,13 @@ position: relative;
 </div>
 </div>
 
-<!-- TAB: TRANSACTIONS (Based on Image 5) -->
+<!-- TAB: TRANSACTIONS -->
 <div id="page-transactions" class="tab-page">
 <div class="app-header" style="padding-bottom:15px; border-radius:0;">
 <h3 style="text-align:center;">Transaction Record</h3>
 </div>
 <div class="content-area" style="margin-top:0;">
 <div class="txn-list" id="transaction-list-container">
-<!-- Static Dummy Data representing image_5 -->
 <div class="txn-card">
 <div class="txn-info">
 <h4>Commission from 620****393</h4>
@@ -259,38 +302,16 @@ position: relative;
 </div>
 <div class="txn-amt positive">+42.0</div>
 </div>
-<div class="txn-card">
-<div class="txn-info">
-<h4>Recommendation award 84 Rs</h4>
-<p>14/03/24 19:39</p>
-</div>
-<div class="txn-amt positive">+84.0</div>
-</div>
-<div class="txn-card">
-<div class="txn-info">
-<h4>Recharge Success</h4>
-<p>10/03/24 14:20</p>
-</div>
-<div class="txn-amt positive">+700.0</div>
-</div>
-<div class="txn-card">
-<div class="txn-info">
-<h4>Withdraw Request</h4>
-<p>05/03/24 09:10</p>
-</div>
-<div class="txn-amt negative">-200.0</div>
-</div>
 </div>
 </div>
 </div>
 
-<!-- TAB: SILVER PRODUCTS -->
+<!-- TAB: PRODUCTS -->
 <div id="page-product" class="tab-page">
 <div class="app-header" style="padding-bottom:15px; border-radius:0;">
 <h3 style="text-align:center;">My Products</h3>
 </div>
 <div class="content-area" style="padding-top:15px; margin-top:0;">
-
 <div class="product-card">
 <div class="product-head">
 <div class="product-title">🔗 Silver Chain</div>
@@ -300,16 +321,6 @@ position: relative;
 <div class="row-detail"><span>Cycle</span><span class="val">21 Days</span></div>
 <div class="row-detail"><span>Daily Income</span><span class="val">₹90</span></div>
 <button class="btn-primary" id="btn-buy-silver_chain" onclick="buyProduct('silver_chain', 700, 90)">Buy (₹700)</button>
-</div>
-
-<div class="product-card">
-<div class="product-head">
-<div class="product-title">🪙 Silver Coin (10g)</div>
-<span class="badge" id="badge-silver_coin">Not Active</span>
-</div>
-<div class="row-detail"><span>Price</span><span class="val">₹1,200</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹180</span></div>
-<button class="btn-primary" id="btn-buy-silver_coin" onclick="buyProduct('silver_coin', 1200, 180)">Buy (₹1,200)</button>
 </div>
 </div>
 </div>
@@ -398,7 +409,7 @@ position: relative;
 </div>
 </div>
 
-<!-- FIREBASE SYSTEM & LOGIC (UNCHANGED) -->
+<!-- FIREBASE SYSTEM & LOGIC -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -426,7 +437,8 @@ const dashboardScreen = document.getElementById("dashboard-screen");
 const formTitle = document.getElementById("form-title");
 const mainBtn = document.getElementById("main-btn");
 const toggleBtn = document.getElementById("toggle-btn");
-const nameGroup = document.getElementById("name-group");
+const otpGroup = document.getElementById("otp-group");
+const btnSendOtp = document.getElementById("btn-send-otp");
 const refGroup = document.getElementById("ref-group");
 
 toggleBtn.addEventListener("click", () => {
@@ -434,14 +446,46 @@ isLogin = !isLogin;
 formTitle.innerText = isLogin ? "Login" : "Register";
 mainBtn.innerText = isLogin ? "Login" : "Create account";
 toggleBtn.innerText = isLogin ? "Need an account? Register" : "Already have an account? Login";
-nameGroup.style.display = isLogin ? "none" : "block";
+
+// Toggle OTP & Phone Fields
+btnSendOtp.style.display = isLogin ? "none" : "block";
+otpGroup.style.display = isLogin ? "none" : "block";
 refGroup.style.display = isLogin ? "none" : "block";
 });
+
+// Global Function to Handle OTP Sending Demo
+window.sendOTP = (inputId) => {
+const phoneNum = document.getElementById(inputId).value;
+if (phoneNum && phoneNum.length === 10) {
+alert("OTP mobile number " + phoneNum + " par bhej diya gaya hai. (Demo OTP: 1234)");
+} else {
+alert("Kripya sahi 10-digit Phone Number darj karein.");
+}
+};
+
+// Forgot Password Controls
+window.openForgotModal = () => {
+document.getElementById("forgot-modal").style.display = "flex";
+};
+window.closeForgotModal = () => {
+document.getElementById("forgot-modal").style.display = "none";
+};
+window.handleResetPassword = () => {
+const otp = document.getElementById("reset-otp").value;
+const newPass = document.getElementById("reset-new-password").value;
+if (otp === "1234" && newPass.length >= 6) {
+alert("Password kamyabi se badal gaya hai! Ab aap naye password se login kar sakte hain.");
+closeForgotModal();
+} else {
+alert("Galat OTP (Demo OTP: 1234) ya Password 6 aksar se chhota hai.");
+}
+};
 
 mainBtn.addEventListener("click", () => {
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
-const name = document.getElementById("reg-name").value;
+const phone = document.getElementById("reg-name").value;
+const otp = document.getElementById("reg-otp").value;
 const refCode = document.getElementById("reg-ref").value.trim().toUpperCase();
 
 if (!email || !password) return alert("Fill all required fields");
@@ -449,11 +493,14 @@ if (!email || !password) return alert("Fill all required fields");
 if (isLogin) {
 signInWithEmailAndPassword(auth, email, password).catch(e => alert(e.message));
 } else {
+if (otp !== "1234") {
+return alert("Sahi OTP darj karein. (Demo OTP: 1234)");
+}
 createUserWithEmailAndPassword(auth, email, password)
 .then(async (res) => {
 const myRefCode = "TRK" + Math.floor(1000 + Math.random() * 9000);
 await setDoc(doc(db, "users", res.user.uid), {
-name: name || "User", email: email, balance: 0, deposit: 0, withdraw: 0, referrals: 0, referralCode: myRefCode, referredBy: refCode || null, activeProducts: {}
+name: phone || "User", email: email, balance: 0, deposit: 0, withdraw: 0, referrals: 0, referralCode: myRefCode, referredBy: refCode || null, activeProducts: {}
 });
 if (refCode) {
 const q = query(collection(db, "users"), where("referralCode", "==", refCode));
@@ -478,7 +525,6 @@ dashboardScreen.style.display = "block";
 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
 if (docSnap.exists()) {
 userData = docSnap.data();
-// UPDATE UI HEADER STATS
 document.querySelectorAll(".user-display-name").forEach(e => e.innerText = userData.name || "User");
 
 let totalAssets = (userData.balance || 0) + (userData.deposit || 0);
