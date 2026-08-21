@@ -241,9 +241,9 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 <div class="row-detail"><span>Price</span><span class="val">₹2,100</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">31 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹210</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹6,510</span></div>
-<button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 210)">Buy Silver Bracelet (₹2,100)</button>
+<div class="row-detail"><span>Daily Income</span><span class="val">₹600</span></div>
+<div class="row-detail"><span>Total Return</span><span class="val">₹18,600</span></div>
+<button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 600)">Buy Silver Bracelet (₹2,100)</button>
 </div>
 </div>
 </div>
@@ -334,9 +334,9 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <input type="number" id="deposit-amount" placeholder="e.g. 700" oninput="updateQRCode()">
 </div>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=ashishkumarstudent75620@paytm&pn=TrackerApp" id="qr-code-img" class="qr-img">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=Tracker756@ybl&pn=TrackerApp" id="qr-code-img" class="qr-img">
 
-<p style="font-size:11px; color:#333; font-weight:600;">UPI ID: ashishkumarstudent75620@paytm</p>
+<p style="font-size:11px; color:#333; font-weight:600;">UPI ID: Tracker756@ybl</p>
 
 <div class="input-group" style="margin-top:10px;">
 <label>12-Digit UTR / Transaction ID</label>
@@ -617,9 +617,10 @@ alert("Item purchased successfully!");
 
 window.openRechargeModal = () => document.getElementById("recharge-modal").style.display = "flex";
 window.closeRechargeModal = () => document.getElementById("recharge-modal").style.display = "none";
+
 window.updateQRCode = () => {
 const amt = document.getElementById("deposit-amount").value || 0;
-const myUPI = "ashishkumarstudent75620@paytm";
+const myUPI = "Tracker756@ybl";
 document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${myUPI}&pn=TrackerApp&am=${amt}&cu=INR`;
 };
 
