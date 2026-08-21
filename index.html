@@ -6,71 +6,93 @@
 <title>Tracker App</title>
 <style>
 * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-body { background-color: #f4f6f9; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-bottom: 75px; }
+body { background-color: #f7faf7; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-bottom: 75px; }
 
-.auth-container { background: white; padding: 30px 24px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); width: 90%; max-width: 380px; text-align: center; margin-top: 40px; }
-.auth-container h2 { font-size: 22px; color: #1a1a1a; margin-bottom: 6px; }
+/* AUTHENTICATION STYLES */
+.auth-container { background: white; padding: 30px 24px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); width: 90%; max-width: 380px; text-align: center; margin-top: 40px; }
+.auth-container h2 { font-size: 22px; color: #10a330; margin-bottom: 6px; }
 .auth-container p { color: #666; font-size: 13px; margin-bottom: 20px; }
 .input-group { text-align: left; margin-bottom: 12px; }
 .input-group label { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
 input { width: 100%; padding: 12px 14px; border: 1px solid #e1e4e8; border-radius: 10px; font-size: 14px; outline: none; background: #fafafa; }
-button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-.toggle-btn { background: none; color: #0052cc; border: none; margin-top: 16px; font-size: 13px; cursor: pointer; text-decoration: underline; }
+input:focus { border-color: #10a330; }
+button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+.toggle-btn { background: none; color: #10a330; border: none; margin-top: 16px; font-size: 13px; cursor: pointer; text-decoration: underline; }
 
+/* APP DASHBOARD STYLES */
 .app-container { display: none; width: 100%; max-width: 440px; }
 .tab-page { display: none; }
 .tab-page.active-page { display: block; }
 
-.app-header { background-color: #0052cc; color: white; padding: 25px 20px 30px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-.app-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.app-header p { font-size: 13px; opacity: 0.9; }
+/* GREEN HEADER & USER PROFILE */
+.app-header {
+background: linear-gradient(180deg, #12b836 0%, #10a330 100%);
+color: white;
+padding: 25px 20px 35px 20px;
+border-bottom-left-radius: 20px;
+border-bottom-right-radius: 20px;
+}
+.user-profile-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+.user-profile-left { display: flex; align-items: center; gap: 12px; }
+.avatar-icon { width: 45px; height: 45px; background: #ffb703; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; }
+.app-header h1 { font-size: 20px; font-weight: 700; }
+.app-header p { font-size: 12px; opacity: 0.9; }
+.logout-header-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px; cursor: pointer; }
 
-.content-area { padding: 0 16px; margin-top: -15px; }
+.content-area { padding: 0 16px; margin-top: -20px; }
 .section-title { font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 20px 0 12px 0; }
 
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.stat-card { background: white; padding: 16px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-.stat-label { font-size: 12px; color: #666; margin-bottom: 6px; }
-.stat-value { font-size: 18px; font-weight: 700; color: #1a1a1a; }
+/* CORAL OFFER BANNER */
+.banner-cashback { background: #e8867c; color: white; border-radius: 14px; padding: 14px; margin-bottom: 15px; font-size: 13px; text-align: center; font-weight: bold; box-shadow: 0 4px 10px rgba(232, 134, 124, 0.2); }
 
+/* DASHBOARD STATS GRID */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat-card { background: white; padding: 16px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+.stat-label { font-size: 12px; color: #666; margin-bottom: 6px; }
+.stat-value { font-size: 18px; font-weight: 700; color: #10a330; }
+
+/* QUICK ACTIONS */
 .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.action-card { background: white; padding: 16px 10px; border-radius: 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; }
+.action-card { background: white; padding: 16px 10px; border-radius: 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); cursor: pointer; }
 .action-icon { font-size: 22px; margin-bottom: 6px; }
 .action-title { font-size: 12px; font-weight: 600; color: #333; }
 
-.banner-cashback { background: linear-gradient(135deg, #ff9900, #ff5500); color: white; border-radius: 14px; padding: 14px; margin-top: 15px; font-size: 13px; text-align: center; font-weight: bold; }
-
-.product-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+/* PRODUCT CARDS */
+.product-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
 .product-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .product-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
-.badge { background: #e6f0ff; color: #0052cc; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+.badge { background: #eaf8ed; color: #10a330; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
 .badge-active { background: #e6f8e6; color: #28a745; }
 .row-detail { display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #555; }
 .row-detail span.val { font-weight: 700; color: #1a1a1a; }
-.btn-action { width: 100%; padding: 10px; background: #0052cc; color: white; border: none; border-radius: 8px; font-weight: 600; margin-top: 10px; cursor: pointer; }
+.btn-action { width: 100%; padding: 11px; background: #10a330; color: white; border: none; border-radius: 10px; font-weight: 600; margin-top: 10px; cursor: pointer; }
 .btn-action:disabled { background: #ccc; cursor: not-allowed; }
 
-.ref-box { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center; margin-top: 15px; }
-.ref-code { font-size: 20px; font-weight: bold; letter-spacing: 2px; color: #0052cc; background: #f0f4ff; padding: 10px; border-radius: 10px; margin: 10px 0; display: inline-block; width: 100%; }
+/* REFERRAL BOX */
+.ref-box { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-align: center; margin-top: 15px; }
+.ref-code { font-size: 20px; font-weight: bold; letter-spacing: 2px; color: #10a330; background: #eaf8ed; padding: 10px; border-radius: 10px; margin: 10px 0; display: inline-block; width: 100%; }
 
+/* MODALS / POPUPS */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; }
 .modal-card { background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; text-align: center; position: relative; }
-.close-modal { position: absolute; right: 15px; top: 15px; font-size: 18px; cursor: pointer; font-weight: bold; }
+.close-modal { position: absolute; right: 15px; top: 15px; font-size: 18px; cursor: pointer; font-weight: bold; color: #888; }
 .qr-img { width: 180px; height: 180px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; }
 
+/* BOTTOM NAVIGATION */
 .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
 .nav-item { text-align: center; color: #8e8e93; font-size: 11px; cursor: pointer; width: 25%; }
-.nav-item.active { color: #0052cc; font-weight: 600; }
+.nav-item.active { color: #10a330; font-weight: 600; }
 .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
 
-/* WhatsApp Support Float Button Styles */
-.whatsapp-float { position: fixed; bottom: 75px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 10px 18px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-decoration: none; font-weight: 600; font-size: 13px; z-index: 150; cursor: pointer; }
+/* WHATSAPP FLOAT BUTTON */
+.whatsapp-float { position: fixed; bottom: 75px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 10px 18px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-decoration: none; font-weight: 600; font-size: 13px; z-index: 150; cursor: pointer; }
 .whatsapp-float:hover { background-color: #1ebc57; }
 .whatsapp-icon { font-size: 18px; }
 </style>
 </head>
 <body>
 
+<!-- AUTHENTICATION SCREEN -->
 <div class="auth-container" id="auth-screen">
 <h2 id="form-title">Login</h2>
 <p id="form-subtitle">Tracker App</p>
@@ -99,20 +121,30 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; colo
 <button class="toggle-btn" id="toggle-btn">Need an account? Register</button>
 </div>
 
+<!-- DASHBOARD MAIN CONTAINER -->
 <div class="app-container" id="dashboard-screen">
 
+<!-- TAB: HOME / DASHBOARD -->
 <div id="page-home" class="tab-page active-page">
 <div class="app-header">
-<h1>Tracker</h1>
-<p>Welcome, <span class="user-display-name">User</span> 👋</p>
+<div class="user-profile-bar">
+<div class="user-profile-left">
+<div class="avatar-icon">👤</div>
+<div>
+<h1 class="user-display-name">User</h1>
+<p>VIP-0 Member</p>
 </div>
-<div class="content-area">
+</div>
+<button class="logout-header-btn" onclick="triggerLogout()">Logout</button>
+</div>
+</div>
 
+<div class="content-area">
 <div class="banner-cashback">
 🎁 Offer: Get ₹100 Cashback on Recharge of ₹700 or more!
 </div>
 
-<div class="section-title">Dashboard</div>
+<div class="section-title">Dashboard Overview</div>
 <div class="stats-grid">
 <div class="stat-card">
 <div class="stat-label">Total Balance</div>
@@ -154,13 +186,14 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; colo
 </div>
 </div>
 
+<!-- TAB: SILVER PRODUCTS -->
 <div id="page-product" class="tab-page">
 <div class="app-header">
 <h1>Silver Collection</h1>
 <p>Buy Silver items & earn daily income</p>
 </div>
 <div class="content-area">
-<div style="height: 20px;"></div>
+<div style="height: 25px;"></div>
 
 <div class="product-card">
 <div class="product-head">
@@ -200,12 +233,14 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; colo
 </div>
 </div>
 
+<!-- TAB: REFERRAL & TEAM -->
 <div id="page-team" class="tab-page">
 <div class="app-header">
 <h1>Invite & Earn</h1>
 <p>Share with friends & earn commission</p>
 </div>
 <div class="content-area">
+<div style="height: 10px;"></div>
 <div class="ref-box">
 <h3>Your Referral Code</h3>
 <div class="ref-code" id="user-ref-code">GENERATING...</div>
@@ -220,18 +255,19 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; colo
 </div>
 <div class="stat-card">
 <div class="stat-label">Level 2 Indirect</div>
-<div class="stat-value" style="color:#0052cc;">5%</div>
+<div class="stat-value" style="color:#10a330;">5%</div>
 </div>
 </div>
 </div>
 </div>
 
+<!-- TAB: USER PROFILE -->
 <div id="page-user" class="tab-page">
 <div class="app-header">
 <h1>User Profile</h1>
-<p>Account details</p>
+<p>Account details and controls</p>
 </div>
-<div class="content-area" style="padding-top:20px;">
+<div class="content-area" style="padding-top:30px;">
 <div class="product-card" style="text-align: center; cursor: pointer;" onclick="openWhatsAppSupport()">
 💬 <strong>Contact Support on WhatsApp</strong>
 </div>
@@ -239,12 +275,13 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; colo
 </div>
 </div>
 
-<!-- WhatsApp Floating Support Button -->
+<!-- WHATSAPP FLOATING SUPPORT BUTTON -->
 <a href="https://wa.me/918092703164?text=Hello%20Support,%20I%20need%20help%20with%20Tracker%20App" target="_blank" class="whatsapp-float">
 <span class="whatsapp-icon">💬</span>
 <span>Support</span>
 </a>
 
+<!-- BOTTOM NAVIGATION BAR -->
 <div class="bottom-nav">
 <div class="nav-item active" onclick="switchTab('home')" id="nav-home">
 <span class="nav-icon">🏠</span>
@@ -266,6 +303,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; colo
 
 </div>
 
+<!-- RECHARGE MODAL -->
 <div class="modal-overlay" id="recharge-modal">
 <div class="modal-card">
 <span class="close-modal" onclick="closeRechargeModal()">✕</span>
@@ -290,6 +328,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; colo
 </div>
 </div>
 
+<!-- WITHDRAW MODAL -->
 <div class="modal-overlay" id="withdraw-modal">
 <div class="modal-card">
 <span class="close-modal" onclick="closeWithdrawModal()">✕</span>
@@ -310,6 +349,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #0052cc; colo
 </div>
 </div>
 
+<!-- FIREBASE SYSTEM & LOGIC -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -391,6 +431,7 @@ referrals: (inviter.referrals || 0) + 1
 }
 });
 
+window.triggerLogout = () => signOut(auth);
 document.getElementById("logout-btn").addEventListener("click", () => signOut(auth));
 
 onAuthStateChanged(auth, (user) => {
