@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tracker App</title>
+<!-- Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
 body { background-color: #f7faf7; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-bottom: 75px; }
@@ -70,7 +72,6 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; }
 .modal-card { background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; text-align: center; position: relative; }
 .close-modal { position: absolute; right: 15px; top: 15px; font-size: 18px; cursor: pointer; font-weight: bold; color: #888; }
-.qr-img { width: 180px; height: 180px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; }
 
 .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
 .nav-item { text-align: center; color: #8e8e93; font-size: 11px; cursor: pointer; width: 25%; }
@@ -246,19 +247,19 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div class="row-detail"><span>Cycle</span><span class="val">31 Days</span></div>
 <div class="row-detail"><span>Daily Income</span><span class="val">₹61</span></div>
 <div class="row-detail"><span>Total Return</span><span class="val">₹1,890</span></div>
-<button class="btn-action" id="btn-buy-silver_chain" onclick="buyProduct('silver_chain', 700, 31)">Buy Silver Chain (₹700)</button>
+<button class="btn-action" id="btn-buy-silver_chain" onclick="buyProduct('silver_chain', 700, 61)">Buy Silver Chain (₹700)</button>
 </div>
 
 <div class="product-card">
 <div class="product-head">
 <div class="product-title">🪙 Silver Coin (10g)</div>
-<span class="badge" id="badge-silver_coin">Not Active</span>
+<span class="badge" id="badge-silver_coin_10g">Not Active</span>
 </div>
 <div class="row-detail"><span>Price</span><span class="val">₹1,200</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">28 Days</span></div>
 <div class="row-detail"><span>Daily Income</span><span class="val">₹90</span></div>
 <div class="row-detail"><span>Total Return</span><span class="val">₹2,520</span></div>
-<button class="btn-action" id="btn-buy-silver_coin" onclick="buyProduct('silver_coin', 1200, 90)">Buy Silver Coin (₹1,200)</button>
+<button class="btn-action" id="btn-buy-silver_coin_10g" onclick="buyProduct('silver_coin_10g', 1200, 90)">Buy Silver Coin (₹1,200)</button>
 </div>
 
 <div class="product-card">
@@ -266,23 +267,23 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div class="product-title">📿 Silver Bracelet</div>
 <span class="badge" id="badge-silver_bracelet">Not Active</span>
 </div>
-<div class="row-detail"><span>Price</span><span class="val">₹3,100</span></div>
+<div class="row-detail"><span>Price</span><span class="val">₹2,100</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">31 Days</span></div>
 <div class="row-detail"><span>Daily Income</span><span class="val">₹210</span></div>
 <div class="row-detail"><span>Total Return</span><span class="val">₹6,510</span></div>
 <button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 210)">Buy Silver Bracelet (₹2,100)</button>
 </div>
 
-  <div class="product-card">
+<div class="product-card">
 <div class="product-head">
 <div class="product-title">🪙 Silver Coin (30g)</div>
-<span class="badge" id="badge-silver_coin">Not Active</span>
+<span class="badge" id="badge-silver_coin_30g">Not Active</span>
 </div>
 <div class="row-detail"><span>Price</span><span class="val">₹5,100</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">36 Days</span></div>
 <div class="row-detail"><span>Daily Income</span><span class="val">₹310</span></div>
 <div class="row-detail"><span>Total Return</span><span class="val">₹11,000</span></div>
-<button class="btn-action" id="btn-buy-silver_coin" onclick="buyProduct('silver_coin', 5,100, 310)">Buy Silver Coin (₹5,100)</button>
+<button class="btn-action" id="btn-buy-silver_coin_30g" onclick="buyProduct('silver_coin_30g', 5100, 310)">Buy Silver Coin (₹5,100)</button>
 </div>
 </div>
 </div>
@@ -373,21 +374,12 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <h3>Deposit / Recharge</h3>
 <p style="font-size:12px; color:#666; margin-top:4px;">Recharge ₹700+ to get ₹100 Cashback!</p>
 
-<div class="input-group" style="margin-top:10px;">
+<div class="input-group" style="margin-top:15px;">
 <label>Enter Amount (₹)</label>
-<input type="number" id="deposit-amount" placeholder="e.g. 700" oninput="updateQRCode()">
+<input type="number" id="deposit-amount" placeholder="e.g. 700">
 </div>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=Tracker0000@ybl&pn=TrackerApp" id="qr-code-img" class="qr-img">
-
-<p style="font-size:11px; color:#333; font-weight:600;">UPI ID: Tracker000@ybl</p>
-
-<div class="input-group" style="margin-top:10px;">
-<label>12-Digit UTR / Transaction ID</label>
-<input type="text" id="deposit-utr" placeholder="e.g. 4021XXXXXXXX">
-</div>
-
-<button class="btn-primary" onclick="submitRechargeRequest()">Submit Payment</button>
+<button class="btn-primary" onclick="startRazorpayPayment()">Pay with Razorpay</button>
 </div>
 </div>
 
@@ -416,7 +408,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyBilxSDUUVefx01qC8hSA5geDqP7VKpVGw",
@@ -589,11 +581,8 @@ updateProductUI();
 }
 });
 
-// Load Realtime Recharge & Withdrawal Status History
 loadRechargeStatus(user.uid);
 loadWithdrawalStatus(user.uid);
-
-// Load Referred Team Members Details
 loadTeamMembers(user.uid);
 
 } else {
@@ -616,24 +605,13 @@ return;
 let html = "";
 snapshot.forEach((doc) => {
 const data = doc.data();
-let statusClass = "status-pending";
-let statusText = (data.status || 'pending').toUpperCase();
-
-if (data.status === "approved" || data.status === "success") {
-statusClass = "status-approved";
-statusText = "SUCCESS";
-} else if (data.status === "rejected") {
-statusClass = "status-rejected";
-statusText = "REJECTED";
-}
-
 html += `
 <div class="history-item">
 <div>
 <strong>₹${data.amount}</strong>
-<div style="font-size:11px; color:#777;">UTR: ${data.utr || 'N/A'}</div>
+<div style="font-size:11px; color:#777;">Payment ID: ${data.paymentId || 'N/A'}</div>
 </div>
-<span class="${statusClass}">${statusText}</span>
+<span class="status-approved">SUCCESS</span>
 </div>
 `;
 });
@@ -671,7 +649,6 @@ listContainer.innerHTML = html;
 });
 }
 
-// LOAD REFERRED TEAM MEMBERS & THEIR PURCHASES/DEPOSITS
 function loadTeamMembers(uid) {
 getDoc(doc(db, "users", uid)).then((userDoc) => {
 if(!userDoc.exists()) return;
@@ -753,7 +730,7 @@ alert(`🎉 Daily Income Claimed: ₹${additionalEarnings}`);
 
 function updateProductUI() {
 const prods = userData.activeProducts || {};
-const items = ['silver_chain', 'silver_coin', 'silver_bracelet'];
+const items = ['silver_chain', 'silver_coin_10g', 'silver_bracelet', 'silver_coin_30g'];
 items.forEach(item => {
 if (prods[item] && prods[item].active) {
 const badge = document.getElementById(`badge-${item}`);
@@ -810,40 +787,65 @@ alert("Item purchased successfully!");
 
 window.openRechargeModal = () => document.getElementById("recharge-modal").style.display = "flex";
 window.closeRechargeModal = () => document.getElementById("recharge-modal").style.display = "none";
-window.updateQRCode = () => {
-const amt = document.getElementById("deposit-amount").value || 0;
-const myUPI = "Tracker0000@ybl";
-document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${myUPI}&pn=TrackerApp&am=${amt}&cu=INR`;
-};
 
-window.submitRechargeRequest = async () => {
-const amt = parseFloat(document.getElementById("deposit-amount").value);
-const utr = document.getElementById("deposit-utr").value.trim();
+// RAZORPAY PAYMENT INTEGRATION
+window.startRazorpayPayment = async () => {
+const amtInput = document.getElementById("deposit-amount").value;
+const amt = parseFloat(amtInput);
 
-if (!amt || amt <= 0) return alert("Enter valid amount");
-if (!utr || utr.length < 6) return alert("Enter valid UTR / Transaction ID");
+if (!amt || amt < 10) {
+return alert("Kripya sahi amount darj karein (Minimum ₹10)");
+}
 
-let cashbackBonus = (amt >= 700) ? 100 : 0;
-
+const options = {
+"key": "rzp_test_TSVKy68Sv0Hpjg",
+"amount": amt * 100,
+"currency": "INR",
+"name": "Tracker App",
+"description": "Wallet Recharge",
+"handler": async function (response) {
 try {
+let cashbackBonus = (amt >= 700) ? 100 : 0;
+let currentBalance = userData.balance || 0;
+let currentDeposit = userData.deposit || 0;
+let currentCashback = userData.cashback || 0;
+
+await updateDoc(doc(db, "users", currentUser.uid), {
+balance: currentBalance + amt + cashbackBonus,
+deposit: currentDeposit + amt,
+cashback: currentCashback + cashbackBonus
+});
+
 await addDoc(collection(db, "recharges"), {
 userId: currentUser.uid,
 userEmail: currentUser.email,
 amount: amt,
 cashbackBonus: cashbackBonus,
-utr: utr,
-status: "pending",
+paymentId: response.razorpay_payment_id,
+status: "success",
 timestamp: new Date()
 });
 
-alert("Recharge request submitted successfully! Payment verify hone ke baad aapka balance update ho jayega.");
+alert(`🎉 Payment Successful! ₹${amt} aur ₹${cashbackBonus} Cashback aapke account mein jod diye gaye hain.`);
 closeRechargeModal();
-
 document.getElementById("deposit-amount").value = "";
-document.getElementById("deposit-utr").value = "";
+
 } catch (e) {
-alert("Error: " + e.message);
+alert("Error updating database: " + e.message);
 }
+},
+"prefill": {
+"name": userData.name || "User",
+"email": currentUser.email,
+"contact": userData.phone || ""
+},
+"theme": {
+"color": "#10a330"
+}
+};
+
+const rzp1 = new Razorpay(options);
+rzp1.open();
 };
 
 window.openWithdrawModal = () => document.getElementById("withdraw-modal").style.display = "flex";
@@ -878,7 +880,7 @@ timestamp: new Date()
 alert("Withdrawal request submitted successfully!");
 closeWithdrawModal();
 } catch (e) {
-e.message;
+alert("Error: " + e.message);
 }
 };
 
