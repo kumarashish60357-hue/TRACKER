@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tracker App</title>
-<!-- Razorpay Checkout Script -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
 body { background-color: #f7faf7; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-bottom: 75px; }
@@ -16,8 +14,8 @@ body { background-color: #f7faf7; display: flex; justify-content: center; align-
 .auth-container p { color: #666; font-size: 13px; margin-bottom: 20px; }
 .input-group { text-align: left; margin-bottom: 12px; }
 .input-group label { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
-input { width: 100%; padding: 12px 14px; border: 1px solid #e1e4e8; border-radius: 10px; font-size: 14px; outline: none; background: #fafafa; }
-input:focus { border-color: #10a330; }
+input, select { width: 100%; padding: 12px 14px; border: 1px solid #e1e4e8; border-radius: 10px; font-size: 14px; outline: none; background: #fafafa; }
+input:focus, select:focus { border-color: #10a330; }
 button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
 .toggle-btn { background: none; color: #10a330; border: none; margin-top: 12px; font-size: 13px; cursor: pointer; text-decoration: underline; display: inline-block; }
 .forgot-btn { background: none; color: #666; border: none; margin-top: 8px; font-size: 12px; cursor: pointer; text-decoration: underline; display: block; width: 100%; }
@@ -57,7 +55,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 .row-detail { display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #555; }
 .row-detail span.val { font-weight: 700; color: #1a1a1a; }
 .btn-action { width: 100%; padding: 11px; background: #10a330; color: white; border: none; border-radius: 10px; font-weight: 600; margin-top: 10px; cursor: pointer; }
-.btn-action:disabled { background: #ccc; cursor: not-allowed; }
+.btn-action:disabled { background: #d1d5db; color: #666; cursor: not-allowed; }
 
 .history-card { background: white; border-radius: 14px; padding: 14px; margin-top: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
 .history-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding: 8px 0; font-size: 13px; }
@@ -70,7 +68,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 .ref-code { font-size: 20px; font-weight: bold; letter-spacing: 2px; color: #10a330; background: #eaf8ed; padding: 10px; border-radius: 10px; margin: 10px 0; display: inline-block; width: 100%; }
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; }
-.modal-card { background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; text-align: center; position: relative; }
+.modal-card { background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 380px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
 .close-modal { position: absolute; right: 15px; top: 15px; font-size: 18px; cursor: pointer; font-weight: bold; color: #888; }
 
 .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
@@ -367,40 +365,91 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 
 </div>
 
-<!-- RECHARGE MODAL -->
+<!-- RECHARGE MODAL WITH LIVE DYNAMIC QR & TIMER -->
 <div class="modal-overlay" id="recharge-modal">
 <div class="modal-card">
 <span class="close-modal" onclick="closeRechargeModal()">✕</span>
 <h3>Deposit / Recharge</h3>
 <p style="font-size:12px; color:#666; margin-top:4px;">Recharge ₹700+ to get ₹100 Cashback!</p>
 
+<div id="step-amount-view">
 <div class="input-group" style="margin-top:15px;">
 <label>Enter Amount (₹)</label>
 <input type="number" id="deposit-amount" placeholder="e.g. 700">
 </div>
+<button class="btn-primary" onclick="generateDynamicQR()">Generate QR Code</button>
+</div>
 
-<button class="btn-primary" onclick="startRazorpayPayment()">Pay with Razorpay</button>
+<div id="step-qr-view" style="display: none; text-align: center; margin-top: 10px;">
+<div style="font-size: 13px; font-weight: bold; color: #e74c3c; margin-bottom: 5px;">
+⏱️ Time Left: <span id="payment-timer">05:00</span>
+</div>
+<div style="font-size: 13px; color: #333; margin-bottom: 8px;">Scan & Pay: <b>₹<span id="qr-display-amt">0</span></b></div>
+
+<!-- Dynamic QR Image generated using Google Chart API based on user amount & UPI -->
+<div style="background: #fff; padding: 10px; display: inline-block; border: 1px solid #ddd; border-radius: 10px;">
+<img id="dynamic-qr-img" src="" alt="UPI QR Code" style="width: 180px; height: 180px; display: block;">
+</div>
+
+<div style="font-size: 11px; color: #555; margin-top: 6px;">UPI ID: <b>yourname@paytm</b></div>
+
+<div class="input-group" style="margin-top: 12px; text-align: left;">
+<label>Enter 12-Digit UTR / Transaction ID</label>
+<input type="text" id="utr-number" placeholder="Enter Ref / UTR No">
+</div>
+
+<button class="btn-primary" onclick="submitManualRecharge()">Submit Payment Proof</button>
+<button class="toggle-btn" onclick="backToAmountStep()" style="margin-top: 6px;">Change Amount</button>
+</div>
+
 </div>
 </div>
 
-<!-- WITHDRAW MODAL -->
+<!-- WITHDRAW MODAL WITH UPI & BANK ACCOUNT OPTIONS -->
 <div class="modal-overlay" id="withdraw-modal">
 <div class="modal-card">
 <span class="close-modal" onclick="closeWithdrawModal()">✕</span>
 <h3>Request Withdrawal</h3>
-<p style="font-size:12px; color:#666; margin-top:4px;">Enter payout details</p>
+<p style="font-size:12px; color:#666; margin-top:4px;">Enter payout details securely</p>
 
 <div class="input-group" style="margin-top:10px;">
 <label>Withdrawal Amount (₹)</label>
-<input type="number" id="withdraw-amt" placeholder="e.g. 200">
+<input type="number" id="withdraw-amt" placeholder="e.g. 500">
 </div>
 
-<div class="input-group">
-<label>UPI ID (or Bank Account No + IFSC)</label>
+<div class="input-group" style="margin-top:8px;">
+<label>Choose Payout Method</label>
+<select id="payout-method" onchange="togglePayoutFields()">
+<option value="upi">UPI ID</option>
+<option value="bank">Bank Account (Account No & IFSC)</option>
+</select>
+</div>
+
+<div class="input-group" id="upi-field-box" style="margin-top:8px;">
+<label>UPI ID</label>
 <input type="text" id="withdraw-upi" placeholder="e.g. 9876543210@paytm">
 </div>
 
-<button class="btn-primary" onclick="submitWithdrawRequest()">Submit Withdrawal</button>
+<div id="bank-field-box" style="display: none;">
+<div class="input-group" style="margin-top:8px;">
+<label>Account Number</label>
+<input type="text" id="bank-acc-no" placeholder="Enter bank account number">
+</div>
+<div class="input-group" style="margin-top:8px;">
+<label>Confirm Account Number</label>
+<input type="text" id="bank-acc-confirm" placeholder="Re-enter account number">
+</div>
+<div class="input-group" style="margin-top:8px;">
+<label>IFSC Code</label>
+<input type="text" id="bank-ifsc" placeholder="e.g. SBIN0001234" style="text-transform: uppercase;">
+</div>
+<div class="input-group" style="margin-top:8px;">
+<label>Account Holder Name</label>
+<input type="text" id="bank-holder-name" placeholder="Name as per bank passbook">
+</div>
+</div>
+
+<button class="btn-primary" onclick="submitWithdrawRequest()" style="margin-top: 15px;">Submit Withdrawal</button>
 </div>
 </div>
 
@@ -427,6 +476,7 @@ let currentUser = null;
 let userData = {};
 let isLogin = true;
 let confirmationResult = null;
+let countdownInterval = null;
 
 const authScreen = document.getElementById("auth-screen");
 const dashboardScreen = document.getElementById("dashboard-screen");
@@ -552,20 +602,18 @@ currentUser = user;
 authScreen.style.display = "none";
 dashboardScreen.style.display = "block";
 
-// Realtime User Data Listener
 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
 if (docSnap.exists()) {
 userData = docSnap.data();
 document.querySelectorAll(".user-display-name").forEach(e => e.innerText = userData.name || "User");
 document.getElementById("user-display-phone").innerText = userData.phone || "N/A";
-document.getElementById("val-balance").innerText = "₹" + (userData.balance || 0);
+document.getElementById("val-balance").innerText = "₹" + (userData.balance || 0).toFixed(2);
 document.getElementById("val-deposit").innerText = "₹" + (userData.deposit || 0);
 document.getElementById("val-withdraw").innerText = "₹" + (userData.withdraw || 0);
-document.getElementById("val-cashback").innerText = "₹" + (userData.cashback || 0);
+document.getElementById("val-cashback").innerText = "₹" + (userData.cashback || 0).toFixed(2);
 document.getElementById("val-ref").innerText = userData.referrals || 0;
 document.getElementById("user-ref-code").innerText = userData.referralCode || "TRK1234";
 
-// Active plans se Daily Earning Calculation
 let totalDailyRate = 0;
 if (userData.activeProducts) {
 for (let key in userData.activeProducts) {
@@ -605,13 +653,17 @@ return;
 let html = "";
 snapshot.forEach((doc) => {
 const data = doc.data();
+let statusClass = "status-pending";
+if (data.status === "approved" || data.status === "success") statusClass = "status-approved";
+if (data.status === "rejected") statusClass = "status-rejected";
+
 html += `
 <div class="history-item">
 <div>
 <strong>₹${data.amount}</strong>
-<div style="font-size:11px; color:#777;">Payment ID: ${data.paymentId || 'N/A'}</div>
+<div style="font-size:11px; color:#777;">UTR: ${data.paymentId || 'N/A'}</div>
 </div>
-<span class="status-approved">SUCCESS</span>
+<span class="${statusClass}">${(data.status || 'pending').toUpperCase()}</span>
 </div>
 `;
 });
@@ -639,7 +691,7 @@ html += `
 <div class="history-item">
 <div>
 <strong>₹${data.amount}</strong>
-<div style="font-size:11px; color:#777;">${data.payoutDetails || ''}</div>
+<div style="font-size:11px; color:#777; max-width:200px; word-break:break-all;">${data.payoutDetails || ''}</div>
 </div>
 <span class="${statusClass}">${(data.status || 'pending').toUpperCase()}</span>
 </div>
@@ -694,6 +746,7 @@ teamContainer.innerHTML = html;
 });
 }
 
+// AUTOMATIC DAY-TO-DAY DAILY EARNING & CLAIMING FUNCTION
 async function checkAndAddDailyEarnings() {
 if (!userData.activeProducts) return;
 
@@ -701,13 +754,14 @@ let currentBalance = userData.balance || 0;
 let additionalEarnings = 0;
 const now = Date.now();
 const activeProds = { ...userData.activeProducts };
+let hasChanges = false;
 
 for (let prodKey in activeProds) {
 let prod = activeProds[prodKey];
 if (prod.active) {
 let lastClaim = prod.lastClaimTime || prod.buyTime;
 let timePassed = now - lastClaim;
-let oneDayInMs = 24 * 60 * 60 * 1000;
+let oneDayInMs = 24 * 60 * 60 * 1000; // 24 Hours
 
 if (timePassed >= oneDayInMs) {
 let daysEarned = Math.floor(timePassed / oneDayInMs);
@@ -715,45 +769,71 @@ let earningToAdd = daysEarned * prod.dailyRate;
 
 additionalEarnings += earningToAdd;
 prod.lastClaimTime = lastClaim + (daysEarned * oneDayInMs);
+hasChanges = true;
 }
 }
 }
 
-if (additionalEarnings > 0) {
+if (hasChanges && additionalEarnings > 0) {
+try {
 await updateDoc(doc(db, "users", currentUser.uid), {
 balance: currentBalance + additionalEarnings,
 activeProducts: activeProds
 });
-alert(`🎉 Daily Income Claimed: ₹${additionalEarnings}`);
+alert(`🎉 Aapka Daily Income ₹${additionalEarnings} automatically aapke balance mein add kar diya gaya hai!`);
+} catch (e) {
+console.error("Error updating daily earnings: ", e.message);
+}
 }
 }
 
+// PRODUCT UI STATUS UPDATE
 function updateProductUI() {
 const prods = userData.activeProducts || {};
 const items = ['silver_chain', 'silver_coin_10g', 'silver_bracelet', 'silver_coin_30g'];
+
 items.forEach(item => {
-if (prods[item] && prods[item].active) {
 const badge = document.getElementById(`badge-${item}`);
 const btn = document.getElementById(`btn-buy-${item}`);
+
+if (prods[item] && prods[item].active) {
 if(badge) {
 badge.innerText = "Active";
-badge.classList.add("badge-active");
+badge.className = "badge badge-active";
 }
 if(btn) {
 btn.innerText = "Already Purchased";
 btn.disabled = true;
+btn.style.background = "#d1d5db";
+btn.style.cursor = "not-allowed";
+}
+} else {
+if(badge) {
+badge.innerText = "Not Active";
+badge.className = "badge";
+}
+if(btn) {
+if(item === 'silver_chain') btn.innerText = "Buy Silver Chain (₹700)";
+if(item === 'silver_coin_10g') btn.innerText = "Buy Silver Coin (₹1,200)";
+if(item === 'silver_bracelet') btn.innerText = "Buy Silver Bracelet (₹2,100)";
+if(item === 'silver_coin_30g') btn.innerText = "Buy Silver Coin (₹5,100)";
+btn.disabled = false;
+btn.style.background = "#10a330";
+btn.style.cursor = "pointer";
 }
 }
 });
 }
 
 window.buyProduct = async (prodKey, price, dailyRate) => {
-if ((userData.balance || 0) < price) {
-return alert(`Insufficient Balance! Please Recharge ₹${price - (userData.balance || 0)} first.`);
+const currentBalance = userData.balance || 0;
+if (currentBalance < price) {
+return alert(`Insufficient Balance! Please Recharge ₹${price - currentBalance} first.`);
 }
 
-if (confirm(`Do you want to buy for ₹${price}?`)) {
-let newBalance = userData.balance - price;
+if (confirm(`Kya aap yeh item ₹${price} mein kharidna chahte hain?`)) {
+try {
+let newBalance = currentBalance - price;
 let activeProducts = userData.activeProducts || {};
 
 activeProducts[prodKey] = {
@@ -781,15 +861,34 @@ cashback: (inviterData.cashback || 0) + commission
 });
 }
 
-alert("Item purchased successfully!");
+alert("Item successfully purchased and activated!");
+updateProductUI();
+} catch (error) {
+alert("Error: " + error.message);
+}
 }
 };
 
-window.openRechargeModal = () => document.getElementById("recharge-modal").style.display = "flex";
-window.closeRechargeModal = () => document.getElementById("recharge-modal").style.display = "none";
+window.openRechargeModal = () => {
+document.getElementById("recharge-modal").style.display = "flex";
+document.getElementById("step-amount-view").style.display = "block";
+document.getElementById("step-qr-view").style.display = "none";
+if(countdownInterval) clearInterval(countdownInterval);
+};
 
-// RAZORPAY PAYMENT INTEGRATION
-window.startRazorpayPayment = async () => {
+window.closeRechargeModal = () => {
+document.getElementById("recharge-modal").style.display = "none";
+if(countdownInterval) clearInterval(countdownInterval);
+};
+
+window.backToAmountStep = () => {
+document.getElementById("step-amount-view").style.display = "block";
+document.getElementById("step-qr-view").style.display = "none";
+if(countdownInterval) clearInterval(countdownInterval);
+};
+
+// DYNAMIC QR CODE & TIMER GENERATOR
+window.generateDynamicQR = () => {
 const amtInput = document.getElementById("deposit-amount").value;
 const amt = parseFloat(amtInput);
 
@@ -797,67 +896,126 @@ if (!amt || amt < 10) {
 return alert("Kripya sahi amount darj karein (Minimum ₹10)");
 }
 
-const options = {
-"key": "rzp_test_TSVKy68Sv0Hpjg",
-"amount": amt * 100,
-"currency": "INR",
-"name": "Tracker App",
-"description": "Wallet Recharge",
-"handler": async function (response) {
+document.getElementById("qr-display-amt").innerText = amt;
+document.getElementById("step-amount-view").style.display = "none";
+document.getElementById("step-qr-view").style.display = "block";
+
+const upiID = "yourname@paytm";
+const payeeName = "TrackerApp";
+const upiURI = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(payeeName)}&am=${amt}&cu=INR`;
+
+const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiURI)}`;
+document.getElementById("dynamic-qr-img").src = qrApiUrl;
+
+startPaymentTimer(300);
+};
+
+function startPaymentTimer(duration) {
+let timer = duration, minutes, seconds;
+if(countdownInterval) clearInterval(countdownInterval);
+
+countdownInterval = setInterval(function () {
+minutes = parseInt(timer / 60, 10);
+seconds = parseInt(timer % 60, 10);
+
+minutes = minutes < 10 ? "0" + minutes : minutes;
+seconds = seconds < 10 ? "0" + seconds : seconds;
+
+document.getElementById("payment-timer").innerText = minutes + ":" + seconds;
+
+if (--timer < 0) {
+clearInterval(countdownInterval);
+alert("Payment session expired! Kripya dobara try karein.");
+backToAmountStep();
+}
+}, 1000);
+}
+
+window.submitManualRecharge = async () => {
+const amt = parseFloat(document.getElementById("deposit-amount").value);
+const utr = document.getElementById("utr-number").value.trim();
+
+if (!utr || utr.length < 6) {
+return alert("Kripya valid 12-digit UTR / Transaction ID darj karein.");
+}
+
 try {
-let cashbackBonus = (amt >= 700) ? 100 : 0;
-let currentBalance = userData.balance || 0;
-let currentDeposit = userData.deposit || 0;
-let currentCashback = userData.cashback || 0;
-
-await updateDoc(doc(db, "users", currentUser.uid), {
-balance: currentBalance + amt + cashbackBonus,
-deposit: currentDeposit + amt,
-cashback: currentCashback + cashbackBonus
-});
-
 await addDoc(collection(db, "recharges"), {
 userId: currentUser.uid,
 userEmail: currentUser.email,
 amount: amt,
-cashbackBonus: cashbackBonus,
-paymentId: response.razorpay_payment_id,
-status: "success",
+paymentId: utr,
+status: "pending",
 timestamp: new Date()
 });
 
-alert(`🎉 Payment Successful! ₹${amt} aur ₹${cashbackBonus} Cashback aapke account mein jod diye gaye hain.`);
+alert("Recharge request successfully submit ho gayi hai! Admin verification ke baad balance update kar diya jayega.");
 closeRechargeModal();
 document.getElementById("deposit-amount").value = "";
-
+document.getElementById("utr-number").value = "";
+if(countdownInterval) clearInterval(countdownInterval);
 } catch (e) {
-alert("Error updating database: " + e.message);
-}
-},
-"prefill": {
-"name": userData.name || "User",
-"email": currentUser.email,
-"contact": userData.phone || ""
-},
-"theme": {
-"color": "#10a330"
+alert("Error: " + e.message);
 }
 };
 
-const rzp1 = new Razorpay(options);
-rzp1.open();
+// WITHDRAWAL MODAL & PAYOUT LOGIC
+window.togglePayoutFields = () => {
+const method = document.getElementById("payout-method").value;
+const upiBox = document.getElementById("upi-field-box");
+const bankBox = document.getElementById("bank-field-box");
+
+if (method === "bank") {
+upiBox.style.display = "none";
+bankBox.style.display = "block";
+} else {
+upiBox.style.display = "block";
+bankBox.style.display = "none";
+}
 };
 
-window.openWithdrawModal = () => document.getElementById("withdraw-modal").style.display = "flex";
-window.closeWithdrawModal = () => document.getElementById("withdraw-modal").style.display = "none";
+window.openWithdrawModal = () => {
+document.getElementById("withdraw-modal").style.display = "flex";
+document.getElementById("withdraw-amt").value = "";
+document.getElementById("withdraw-upi").value = "";
+document.getElementById("bank-acc-no").value = "";
+document.getElementById("bank-acc-confirm").value = "";
+document.getElementById("bank-ifsc").value = "";
+document.getElementById("bank-holder-name").value = "";
+document.getElementById("payout-method").value = "upi";
+togglePayoutFields();
+};
+
+window.closeWithdrawModal = () => {
+document.getElementById("withdraw-modal").style.display = "none";
+};
 
 window.submitWithdrawRequest = async () => {
 const amt = parseFloat(document.getElementById("withdraw-amt").value);
-const upi = document.getElementById("withdraw-upi").value.trim();
+const method = document.getElementById("payout-method").value;
 
-if (!amt || amt <= 0) return alert("Enter valid amount");
-if (amt > (userData.balance || 0)) return alert("Insufficient Balance!");
-if (!upi) return alert("Enter valid UPI ID or Bank Details");
+if (!amt || amt <= 0) return alert("Kripya valid withdrawal amount darj karein.");
+if (amt > (userData.balance || 0)) return alert("Aapka balance kam hai (Insufficient Balance)!");
+
+let payoutDetailsStr = "";
+
+if (method === "upi") {
+const upi = document.getElementById("withdraw-upi").value.trim();
+if (!upi) return alert("Kripya apni valid UPI ID darj karein.");
+payoutDetailsStr = `UPI: ${upi}`;
+} else {
+const accNo = document.getElementById("bank-acc-no").value.trim();
+const accConfirm = document.getElementById("bank-acc-confirm").value.trim();
+const ifsc = document.getElementById("bank-ifsc").value.trim().toUpperCase();
+const holderName = document.getElementById("bank-holder-name").value.trim();
+
+if (!accNo || accNo.length < 8) return alert("Kripya valid Bank Account Number darj karein.");
+if (accNo !== accConfirm) return alert("Account numbers match nahi kar rahe hain!");
+if (!ifsc || ifsc.length < 6) return alert("Kripya valid IFSC Code darj karein.");
+if (!holderName) return alert("Kripya account holder ka naam darj karein.");
+
+payoutDetailsStr = `Bank A/C: ${accNo} | IFSC: ${ifsc} | Name: ${holderName}`;
+}
 
 try {
 let newBalance = userData.balance - amt;
@@ -872,12 +1030,12 @@ await addDoc(collection(db, "withdrawals"), {
 userId: currentUser.uid,
 userEmail: currentUser.email,
 amount: amt,
-payoutDetails: upi,
+payoutDetails: payoutDetailsStr,
 status: "pending",
 timestamp: new Date()
 });
 
-alert("Withdrawal request submitted successfully!");
+alert("Withdrawal request successfully submit ho gayi hai!");
 closeWithdrawModal();
 } catch (e) {
 alert("Error: " + e.message);
