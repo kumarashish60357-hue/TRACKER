@@ -249,9 +249,9 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 <div class="row-detail"><span>Price</span><span class="val">₹1,200</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">25 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹124</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹2,090</span></div>
-<button class="btn-action" id="btn-buy-silver_coin" onclick="buyProduct('silver_coin', 1200, 124)">Buy Silver Coin (₹1,200)</button>
+<div class="row-detail"><span>Daily Income</span><span class="val">₹180</span></div>
+<div class="row-detail"><span>Total Return</span><span class="val">₹4,500</span></div>
+<button class="btn-action" id="btn-buy-silver_coin" onclick="buyProduct('silver_coin', 1200, 180)">Buy Silver Coin (₹1,200)</button>
 </div>
 
 <div class="product-card">
@@ -261,9 +261,9 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 <div class="row-detail"><span>Price</span><span class="val">₹2,100</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">31 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹210</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹6,510</span></div>
-<button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 210)">Buy Silver Bracelet (₹2,100)</button>
+<div class="row-detail"><span>Daily Income</span><span class="val">₹600</span></div>
+<div class="row-detail"><span>Total Return</span><span class="val">₹18,600</span></div>
+<button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 600)">Buy Silver Bracelet (₹2,100)</button>
 </div>
 </div>
 </div>
@@ -359,9 +359,9 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <input type="number" id="deposit-amount" placeholder="e.g. 700" oninput="updateQRCode()">
 </div>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=Tracker756@ybl&pn=TrackerApp" id="qr-code-img" class="qr-img">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=ashishkumarstudent75620@paytm&pn=TrackerApp" id="qr-code-img" class="qr-img">
 
-<p style="font-size:11px; color:#333; font-weight:600;">UPI ID: Tracker756@ybl</p>
+<p style="font-size:11px; color:#333; font-weight:600;">UPI ID: ashishkumarstudent75620@paytm</p>
 
 <div class="input-group" style="margin-top:10px;">
 <label>12-Digit UTR / Transaction ID</label>
@@ -614,7 +614,6 @@ listContainer.innerHTML = html;
 
 // LOAD REFERRED TEAM MEMBERS & THEIR PURCHASES/DEPOSITS
 function loadTeamMembers(uid) {
-// First get current user's referral code
 getDoc(doc(db, "users", uid)).then((userDoc) => {
 if(!userDoc.exists()) return;
 const myRefCode = userDoc.data().referralCode;
@@ -645,7 +644,7 @@ if(activeNames.length > 0) productsList = activeNames.join(", ");
 
 html += `
 <div class="history-item" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 0;">
-<div style="display: flex; justify-content: space-width; width: 100%; justify-content: space-between;">
+<div style="display: flex; width: 100%; justify-content: space-between;">
 <strong>👤 ${member.name || 'User'}</strong>
 <span style="color: #10a330; font-weight: bold;">Deposit: ₹${member.deposit || 0}</span>
 </div>
@@ -659,7 +658,6 @@ teamContainer.innerHTML = html;
 });
 }
 
-// FIXED: Balance calculation bug solved
 async function checkAndAddDailyEarnings() {
 if (!userData.activeProducts) return;
 
@@ -734,13 +732,12 @@ balance: newBalance,
 activeProducts: activeProducts
 });
 
-// Give 10% Commission / Cashback to Inviter if referredBy exists
 if (userData.referredBy) {
 const q = query(collection(db, "users"), where("referralCode", "==", userData.referredBy));
 const querySnap = await getDocs(q);
 querySnap.forEach(async (inviterDoc) => {
 const inviterData = inviterDoc.data();
-const commission = price * 0.10; // 10% commission
+const commission = price * 0.10;
 await updateDoc(doc(db, "users", inviterDoc.id), {
 balance: (inviterData.balance || 0) + commission,
 cashback: (inviterData.cashback || 0) + commission
@@ -756,10 +753,11 @@ window.openRechargeModal = () => document.getElementById("recharge-modal").style
 window.closeRechargeModal = () => document.getElementById("recharge-modal").style.display = "none";
 window.updateQRCode = () => {
 const amt = document.getElementById("deposit-amount").value || 0;
-const myUPI = "Tracker756@ybl";
+const myUPI = "ashishkumarstudent75620@paytm";
 document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${myUPI}&pn=TrackerApp&am=${amt}&cu=INR`;
 };
 
+// SECURED: Now only saves request as 'pending' without giving fake balance instantly
 window.submitRechargeRequest = async () => {
 const amt = parseFloat(document.getElementById("deposit-amount").value);
 const utr = document.getElementById("deposit-utr").value.trim();
@@ -780,19 +778,11 @@ status: "pending",
 timestamp: new Date()
 });
 
-// Automatically update deposit & add signup offer/cashback bonus to user
-let newDeposit = (userData.deposit || 0) + amt;
-let newBalance = (userData.balance || 0) + amt + cashbackBonus;
-let newCashback = (userData.cashback || 0) + cashbackBonus;
-
-await updateDoc(doc(db, "users", currentUser.uid), {
-deposit: newDeposit,
-balance: newBalance,
-cashback: newCashback
-});
-
-alert("Payment submitted & added successfully!");
+alert("Recharge request submitted successfully! Payment verify hone ke baad aapka balance update ho jayega.");
 closeRechargeModal();
+
+document.getElementById("deposit-amount").value = "";
+document.getElementById("deposit-utr").value = "";
 } catch (e) {
 alert("Error: " + e.message);
 }
@@ -830,7 +820,7 @@ timestamp: new Date()
 alert("Withdrawal request submitted successfully!");
 closeWithdrawModal();
 } catch (e) {
-alert("Error: " + e.message);
+e.message;
 }
 };
 
