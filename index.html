@@ -17,7 +17,8 @@ body { background-color: #f7faf7; display: flex; justify-content: center; align-
 input { width: 100%; padding: 12px 14px; border: 1px solid #e1e4e8; border-radius: 10px; font-size: 14px; outline: none; background: #fafafa; }
 input:focus { border-color: #10a330; }
 button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-.toggle-btn { background: none; color: #10a330; border: none; margin-top: 16px; font-size: 13px; cursor: pointer; text-decoration: underline; }
+.toggle-btn { background: none; color: #10a330; border: none; margin-top: 12px; font-size: 13px; cursor: pointer; text-decoration: underline; display: inline-block; }
+.forgot-btn { background: none; color: #666; border: none; margin-top: 8px; font-size: 12px; cursor: pointer; text-decoration: underline; display: block; width: 100%; }
 
 /* APP DASHBOARD STYLES */
 .app-container { display: none; width: 100%; max-width: 440px; }
@@ -102,12 +103,17 @@ border-bottom-right-radius: 20px;
 <input type="text" id="reg-name" placeholder="User Name">
 </div>
 
+<div class="input-group" id="phone-group" style="display: none;">
+<label>Mobile Number</label>
+<input type="tel" id="reg-phone" placeholder="e.g. 9876543210">
+</div>
+
 <div class="input-group">
 <label>Email Address</label>
 <input type="email" id="email" placeholder="user@gmail.com" required>
 </div>
 
-<div class="input-group">
+<div class="input-group" id="password-group">
 <label>Password</label>
 <input type="password" id="password" placeholder="••••••••" required>
 </div>
@@ -119,6 +125,7 @@ border-bottom-right-radius: 20px;
 
 <button class="btn-primary" id="main-btn">Login</button>
 <button class="toggle-btn" id="toggle-btn">Need an account? Register</button>
+<button class="forgot-btn" id="forgot-btn" onclick="handleForgotPassword()">Forgot Password?</button>
 </div>
 
 <!-- DASHBOARD MAIN CONTAINER -->
@@ -268,6 +275,10 @@ border-bottom-right-radius: 20px;
 <p>Account details and controls</p>
 </div>
 <div class="content-area" style="padding-top:30px;">
+<div class="product-card">
+<div class="row-detail"><span>Name:</span><span class="val user-display-name">User</span></div>
+<div class="row-detail"><span>Mobile:</span><span class="val" id="user-display-phone">N/A</span></div>
+</div>
 <div class="product-card" style="text-align: center; cursor: pointer;" onclick="openWhatsAppSupport()">
 💬 <strong>Contact Support on WhatsApp</strong>
 </div>
@@ -352,7 +363,7 @@ border-bottom-right-radius: 20px;
 <!-- FIREBASE SYSTEM & LOGIC -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -377,7 +388,9 @@ const dashboardScreen = document.getElementById("dashboard-screen");
 const formTitle = document.getElementById("form-title");
 const mainBtn = document.getElementById("main-btn");
 const toggleBtn = document.getElementById("toggle-btn");
+const forgotBtn = document.getElementById("forgot-btn");
 const nameGroup = document.getElementById("name-group");
+const phoneGroup = document.getElementById("phone-group");
 const refGroup = document.getElementById("ref-group");
 
 toggleBtn.addEventListener("click", () => {
@@ -386,13 +399,16 @@ formTitle.innerText = isLogin ? "Login" : "Create Account";
 mainBtn.innerText = isLogin ? "Login" : "Create account";
 toggleBtn.innerText = isLogin ? "Need an account? Register" : "Already have an account? Login";
 nameGroup.style.display = isLogin ? "none" : "block";
+phoneGroup.style.display = isLogin ? "none" : "block";
 refGroup.style.display = isLogin ? "none" : "block";
+forgotBtn.style.display = isLogin ? "block" : "none";
 });
 
 mainBtn.addEventListener("click", () => {
-const email = document.getElementById("email").value;
+const email = document.getElementById("email").value.trim();
 const password = document.getElementById("password").value;
-const name = document.getElementById("reg-name").value;
+const name = document.getElementById("reg-name").value.trim();
+const phone = document.getElementById("reg-phone").value.trim();
 const refCode = document.getElementById("reg-ref").value.trim().toUpperCase();
 
 if (!email || !password) return alert("Fill all required fields");
@@ -400,12 +416,15 @@ if (!email || !password) return alert("Fill all required fields");
 if (isLogin) {
 signInWithEmailAndPassword(auth, email, password).catch(e => alert(e.message));
 } else {
+if (!phone || phone.length < 10) return alert("Please enter a valid mobile number");
+
 createUserWithEmailAndPassword(auth, email, password)
 .then(async (res) => {
 const myRefCode = "TRK" + Math.floor(1000 + Math.random() * 9000);
 
 await setDoc(doc(db, "users", res.user.uid), {
 name: name || "User",
+phone: phone || "",
 email: email,
 balance: 0,
 deposit: 0,
@@ -431,6 +450,21 @@ referrals: (inviter.referrals || 0) + 1
 }
 });
 
+window.handleForgotPassword = () => {
+const email = document.getElementById("email").value.trim();
+if (!email) {
+return alert("Please enter your Registered Email Address first to reset password.");
+}
+
+sendPasswordResetEmail(auth, email)
+.then(() => {
+alert("Password Reset Link sent to your Email! Check your inbox.");
+})
+.catch((error) => {
+alert("Error: " + error.message);
+});
+};
+
 window.triggerLogout = () => signOut(auth);
 document.getElementById("logout-btn").addEventListener("click", () => signOut(auth));
 
@@ -444,6 +478,7 @@ onSnapshot(doc(db, "users", user.uid), (docSnap) => {
 if (docSnap.exists()) {
 userData = docSnap.data();
 document.querySelectorAll(".user-display-name").forEach(e => e.innerText = userData.name || "User");
+document.getElementById("user-display-phone").innerText = userData.phone || "N/A";
 document.getElementById("val-balance").innerText = "₹" + (userData.balance || 0);
 document.getElementById("val-deposit").innerText = "₹" + (userData.deposit || 0);
 document.getElementById("val-withdraw").innerText = "₹" + (userData.withdraw || 0);
