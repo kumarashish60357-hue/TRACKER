@@ -237,9 +237,9 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 <div class="row-detail"><span>Price</span><span class="val">₹700</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">21 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹75</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹1,575</span></div>
-<button class="btn-action" id="btn-buy-silver_chain" onclick="buyProduct('silver_chain', 700, 75)">Buy Silver Chain (₹700)</button>
+<div class="row-detail"><span>Daily Income</span><span class="val">₹90</span></div>
+<div class="row-detail"><span>Total Return</span><span class="val">₹1,890</span></div>
+<button class="btn-action" id="btn-buy-silver_chain" onclick="buyProduct('silver_chain', 700, 90)">Buy Silver Chain (₹700)</button>
 </div>
 
 <div class="product-card">
@@ -249,9 +249,9 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 <div class="row-detail"><span>Price</span><span class="val">₹1,200</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">25 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹124</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹2,090</span></div>
-<button class="btn-action" id="btn-buy-silver_coin" onclick="buyProduct('silver_coin', 1200, 124)">Buy Silver Coin (₹1,200)</button>
+<div class="row-detail"><span>Daily Income</span><span class="val">₹180</span></div>
+<div class="row-detail"><span>Total Return</span><span class="val">₹4,500</span></div>
+<button class="btn-action" id="btn-buy-silver_coin" onclick="buyProduct('silver_coin', 1200, 180)">Buy Silver Coin (₹1,200)</button>
 </div>
 
 <div class="product-card">
@@ -261,9 +261,9 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 <div class="row-detail"><span>Price</span><span class="val">₹2,100</span></div>
 <div class="row-detail"><span>Cycle</span><span class="val">31 Days</span></div>
-<div class="row-detail"><span>Daily Income</span><span class="val">₹210</span></div>
-<div class="row-detail"><span>Total Return</span><span class="val">₹6,510</span></div>
-<button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 210)">Buy Silver Bracelet (₹2,100)</button>
+<div class="row-detail"><span>Daily Income</span><span class="val">₹600</span></div>
+<div class="row-detail"><span>Total Return</span><span class="val">₹18,600</span></div>
+<button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 600)">Buy Silver Bracelet (₹2,100)</button>
 </div>
 </div>
 </div>
@@ -272,7 +272,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div id="page-team" class="tab-page">
 <div class="app-header">
 <h1>Invite & Earn</h1>
-<p>Share with friends & earn commission</p>
+<p>Share with friends & track their details</p>
 </div>
 <div class="content-area">
 <div style="height: 10px;"></div>
@@ -280,6 +280,11 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <h3>Your Referral Code</h3>
 <div class="ref-code" id="user-ref-code">GENERATING...</div>
 <button class="btn-primary" onclick="copyReferralLink()">📋 Copy Referral Link</button>
+</div>
+
+<div class="section-title">Your Team Members (Referred List)</div>
+<div class="history-card" id="team-members-list">
+<p style="font-size:12px; color:#888; text-align:center;">No team members found.</p>
 </div>
 
 <div class="section-title">Commission Rates</div>
@@ -568,6 +573,9 @@ updateProductUI();
 // Load Realtime Withdrawal History & Status
 loadWithdrawalStatus(user.uid);
 
+// Load Referred Team Members Details
+loadTeamMembers(user.uid);
+
 } else {
 authScreen.style.display = "block";
 dashboardScreen.style.display = "none";
@@ -601,6 +609,53 @@ html += `
 `;
 });
 listContainer.innerHTML = html;
+});
+}
+
+// LOAD REFERRED TEAM MEMBERS & THEIR PURCHASES/DEPOSITS
+function loadTeamMembers(uid) {
+// First get current user's referral code
+getDoc(doc(db, "users", uid)).then((userDoc) => {
+if(!userDoc.exists()) return;
+const myRefCode = userDoc.data().referralCode;
+if(!myRefCode) return;
+
+const q = query(collection(db, "users"), where("referredBy", "==", myRefCode));
+onSnapshot(q, (snapshot) => {
+const teamContainer = document.getElementById("team-members-list");
+if (snapshot.empty) {
+teamContainer.innerHTML = `<p style="font-size:12px; color:#888; text-align:center;">No team members found yet.</p>`;
+return;
+}
+
+let html = "";
+snapshot.forEach((docSnap) => {
+const member = docSnap.data();
+let productsList = "None";
+
+if (member.activeProducts) {
+let activeNames = [];
+for(let pKey in member.activeProducts) {
+if(member.activeProducts[pKey].active) {
+activeNames.push(pKey.replace('_', ' ').toUpperCase());
+}
+}
+if(activeNames.length > 0) productsList = activeNames.join(", ");
+}
+
+html += `
+<div class="history-item" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 0;">
+<div style="display: flex; justify-content: space-width; width: 100%; justify-content: space-between;">
+<strong>👤 ${member.name || 'User'}</strong>
+<span style="color: #10a330; font-weight: bold;">Deposit: ₹${member.deposit || 0}</span>
+</div>
+<div style="font-size: 11px; color: #555;">Mobile: ${member.phone || 'N/A'}</div>
+<div style="font-size: 11px; color: #333;">Purchased Products: <b>${productsList}</b></div>
+</div>
+`;
+});
+teamContainer.innerHTML = html;
+});
 });
 }
 
@@ -679,6 +734,20 @@ balance: newBalance,
 activeProducts: activeProducts
 });
 
+// Give 10% Commission / Cashback to Inviter if referredBy exists
+if (userData.referredBy) {
+const q = query(collection(db, "users"), where("referralCode", "==", userData.referredBy));
+const querySnap = await getDocs(q);
+querySnap.forEach(async (inviterDoc) => {
+const inviterData = inviterDoc.data();
+const commission = price * 0.10; // 10% commission
+await updateDoc(doc(db, "users", inviterDoc.id), {
+balance: (inviterData.balance || 0) + commission,
+cashback: (inviterData.cashback || 0) + commission
+});
+});
+}
+
 alert("Item purchased successfully!");
 }
 };
@@ -711,7 +780,18 @@ status: "pending",
 timestamp: new Date()
 });
 
-alert("Payment request submitted!");
+// Automatically update deposit & add signup offer/cashback bonus to user
+let newDeposit = (userData.deposit || 0) + amt;
+let newBalance = (userData.balance || 0) + amt + cashbackBonus;
+let newCashback = (userData.cashback || 0) + cashbackBonus;
+
+await updateDoc(doc(db, "users", currentUser.uid), {
+deposit: newDeposit,
+balance: newBalance,
+cashback: newCashback
+});
+
+alert("Payment submitted & added successfully!");
 closeRechargeModal();
 } catch (e) {
 alert("Error: " + e.message);
@@ -733,13 +813,11 @@ try {
 let newBalance = userData.balance - amt;
 let newWithdrawTotal = (userData.withdraw || 0) + amt;
 
-// Update balance and total withdrawal in user document
 await updateDoc(doc(db, "users", currentUser.uid), {
 balance: newBalance,
 withdraw: newWithdrawTotal
 });
 
-// Add withdrawal request record
 await addDoc(collection(db, "withdrawals"), {
 userId: currentUser.uid,
 userEmail: currentUser.email,
