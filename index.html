@@ -57,6 +57,13 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 .btn-action { width: 100%; padding: 11px; background: #10a330; color: white; border: none; border-radius: 10px; font-weight: 600; margin-top: 10px; cursor: pointer; }
 .btn-action:disabled { background: #ccc; cursor: not-allowed; }
 
+.history-card { background: white; border-radius: 14px; padding: 14px; margin-top: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+.history-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding: 8px 0; font-size: 13px; }
+.history-item:last-child { border-bottom: none; }
+.status-pending { color: #f39c12; font-weight: bold; background: #fffdf0; padding: 2px 8px; border-radius: 6px; font-size: 11px; }
+.status-approved { color: #27ae60; font-weight: bold; background: #f0fff4; padding: 2px 8px; border-radius: 6px; font-size: 11px; }
+.status-rejected { color: #e74c3c; font-weight: bold; background: #fff0f0; padding: 2px 8px; border-radius: 6px; font-size: 11px; }
+
 .ref-box { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-align: center; margin-top: 15px; }
 .ref-code { font-size: 20px; font-weight: bold; letter-spacing: 2px; color: #10a330; background: #eaf8ed; padding: 10px; border-radius: 10px; margin: 10px 0; display: inline-block; width: 100%; }
 
@@ -185,6 +192,11 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div class="stat-label">Total Deposit</div>
 <div class="stat-value" id="val-deposit">₹0.00</div>
 </div>
+</div>
+
+<div class="section-title">Withdrawal Requests Status</div>
+<div class="history-card" id="withdrawal-history-list">
+<p style="font-size:12px; color:#888; text-align:center;">No withdrawal history found.</p>
 </div>
 
 <div class="section-title">Quick Actions</div>
@@ -380,7 +392,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyBilxSDUUVefx01qC8hSA5geDqP7VKpVGw",
@@ -524,6 +536,7 @@ currentUser = user;
 authScreen.style.display = "none";
 dashboardScreen.style.display = "block";
 
+// Realtime User Data Listener
 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
 if (docSnap.exists()) {
 userData = docSnap.data();
@@ -536,7 +549,7 @@ document.getElementById("val-cashback").innerText = "₹" + (userData.cashback |
 document.getElementById("val-ref").innerText = userData.referrals || 0;
 document.getElementById("user-ref-code").innerText = userData.referralCode || "TRK1234";
 
-// Active plans se Daily Earning Calculate karna
+// Active plans se Daily Earning Calculation
 let totalDailyRate = 0;
 if (userData.activeProducts) {
 for (let key in userData.activeProducts) {
@@ -551,17 +564,52 @@ checkAndAddDailyEarnings();
 updateProductUI();
 }
 });
+
+// Load Realtime Withdrawal History & Status
+loadWithdrawalStatus(user.uid);
+
 } else {
 authScreen.style.display = "block";
 dashboardScreen.style.display = "none";
 }
 });
 
+function loadWithdrawalStatus(uid) {
+const q = query(collection(db, "withdrawals"), where("userId", "==", uid));
+onSnapshot(q, (snapshot) => {
+const listContainer = document.getElementById("withdrawal-history-list");
+if (snapshot.empty) {
+listContainer.innerHTML = `<p style="font-size:12px; color:#888; text-align:center;">No withdrawal history found.</p>`;
+return;
+}
+
+let html = "";
+snapshot.forEach((doc) => {
+const data = doc.data();
+let statusClass = "status-pending";
+if (data.status === "approved" || data.status === "success") statusClass = "status-approved";
+if (data.status === "rejected") statusClass = "status-rejected";
+
+html += `
+<div class="history-item">
+<div>
+<strong>₹${data.amount}</strong>
+<div style="font-size:11px; color:#777;">${data.payoutDetails || ''}</div>
+</div>
+<span class="${statusClass}">${(data.status || 'pending').toUpperCase()}</span>
+</div>
+`;
+});
+listContainer.innerHTML = html;
+});
+}
+
+// FIXED: Balance calculation bug solved
 async function checkAndAddDailyEarnings() {
 if (!userData.activeProducts) return;
 
-let updatedBalance = userData.balance || 0;
-let modified = false;
+let currentBalance = userData.balance || 0;
+let additionalEarnings = 0;
 const now = Date.now();
 const activeProds = { ...userData.activeProducts };
 
@@ -576,19 +624,18 @@ if (timePassed >= oneDayInMs) {
 let daysEarned = Math.floor(timePassed / oneDayInMs);
 let earningToAdd = daysEarned * prod.dailyRate;
 
-updatedBalance += earningToAdd;
+additionalEarnings += earningToAdd;
 prod.lastClaimTime = lastClaim + (daysEarned * oneDayInMs);
-modified = true;
-alert(`🎉 Daily Income Claimed: ₹${earningToAdd}`);
 }
 }
 }
 
-if (modified) {
+if (additionalEarnings > 0) {
 await updateDoc(doc(db, "users", currentUser.uid), {
-balance: updatedBalance,
+balance: currentBalance + additionalEarnings,
 activeProducts: activeProds
 });
+alert(`🎉 Daily Income Claimed: ₹${additionalEarnings}`);
 }
 }
 
@@ -684,8 +731,15 @@ if (!upi) return alert("Enter valid UPI ID or Bank Details");
 
 try {
 let newBalance = userData.balance - amt;
-await updateDoc(doc(db, "users", currentUser.uid), { balance: newBalance });
+let newWithdrawTotal = (userData.withdraw || 0) + amt;
 
+// Update balance and total withdrawal in user document
+await updateDoc(doc(db, "users", currentUser.uid), {
+balance: newBalance,
+withdraw: newWithdrawTotal
+});
+
+// Add withdrawal request record
 await addDoc(collection(db, "withdrawals"), {
 userId: currentUser.uid,
 userEmail: currentUser.email,
