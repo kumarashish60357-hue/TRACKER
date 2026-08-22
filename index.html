@@ -1108,6 +1108,62 @@ document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active")
 document.getElementById("page-" + tab).classList.add("active-page");
 document.getElementById("nav-" + tab).classList.add("active");
 };
+import { collection, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 1. Database se products load karke screen par dikhane ke liye
+function loadProducts() {
+const container = document.getElementById("products-container");
+if(!container) return;
+
+onSnapshot(collection(db, "products"), (snapshot) => {
+let html = "";
+if(snapshot.empty) {
+container.innerHTML = `<p style="text-align: center; color: #888; margin-top: 20px;">No products available yet.</p>`;
+return;
+}
+snapshot.forEach((docSnap) => {
+let p = docSnap.data();
+html += `
+<div class="product-card" style="background:#fff; padding:15px; margin-bottom:10px; border-radius:8px; border-left:4px solid #007bff;">
+<h3>${p.title}</h3>
+<div style="font-size:13px; color:#555; margin: 5px 0;">
+<span>Price: <b>₹${p.price}</b></span> |
+<span>Daily: <b>₹${p.dailyIncome}</b></span> |
+<span>Days: <b>${p.cycleDays}</b></span>
+</div>
+<button onclick="alert('Investing in ${p.title}')" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Invest Now</button>
+</div>`;
+});
+container.innerHTML = html;
+});
+}
+loadProducts();
+
+// 2. Admin Panel se naya product Database mein add karne ke liye
+window.addNewProductAdmin = async () => {
+const title = document.getElementById("adm-p-title").value.trim();
+const price = parseFloat(document.getElementById("adm-p-price").value);
+const daily = parseFloat(document.getElementById("adm-p-daily").value);
+const days = parseInt(document.getElementById("adm-p-days").value);
+
+if(!title || !price || !daily || !days) return alert("Sabhi fields bharein!");
+
+const prodId = "prod_" + Date.now();
+try {
+await setDoc(doc(db, "products", prodId), {
+title: title,
+price: price,
+dailyIncome: daily,
+cycleDays: days
+});
+alert("Product successfully publish ho gaya!");
+document.getElementById("adm-p-title").value = "";
+document.getElementById("adm-p-price").value = "";
+document.getElementById("adm-p-daily").value = "";
+document.getElementById("adm-p-days").value = "";
+} catch(e) { alert("Error: " + e.message); }
+};
+  
 </script>
 
 </body>
