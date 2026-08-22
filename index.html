@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracker App with Admin Panel</title>
 <title>Tracker App</title>
 <style>
 * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
@@ -344,6 +345,38 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <button class="btn-primary" style="background:#dc3545;" id="logout-btn">Logout</button>
 </div>
 </div>
+
+  <!-- TAB: ADMIN PANEL (Only visible to admin email) -->
+<div id="page-admin" class="tab-page">
+<div class="app-header" style="background: linear-gradient(180deg, #d9534f 0%, #c9302c 100%);">
+<h1>Admin Panel</h1>
+<p>Manage recharges, withdrawals & add products</p>
+</div>
+<div class="content-area">
+<div style="height: 20px;"></div>
+
+<!-- Add New Product Form -->
+<div class="product-card" style="border-left: 4px solid #c9302c;">
+<h3 style="margin-bottom: 10px; font-size: 15px; color: #c9302c;">➕ Add New Product</h3>
+<div class="input-group"><label>Product Title</label><input type="text" id="adm-p-title" placeholder="e.g. Gold Coin"></div>
+<div class="input-group"><label>Price (₹)</label><input type="number" id="adm-p-price" placeholder="1000"></div>
+<div class="input-group"><label>Daily Income (₹)</label><input type="number" id="adm-p-daily" placeholder="100"></div>
+<div class="input-group"><label>Cycle Days</label><input type="number" id="adm-p-days" placeholder="30"></div>
+<button class="btn-primary" style="background: #c9302c;" onclick="addNewProductAdmin()">Publish Product</button>
+</div>
+
+<div class="section-title">Pending Recharges (Approval)</div>
+<div class="history-card" id="admin-recharge-list">
+<p style="font-size:12px; color:#888; text-align:center;">No pending recharges.</p>
+</div>
+
+<div class="section-title">Pending Withdrawals (Approval)</div>
+<div class="history-card" id="admin-withdraw-list">
+<p style="font-size:12px; color:#888; text-align:center;">No pending withdrawals.</p>
+</div>
+</div>
+</div>
+
 
 <!-- WHATSAPP FLOATING SUPPORT BUTTON -->
 <a href="https://wa.me/918092703164?text=Hello%20Support,%20I%20need%20help%20with%20Tracker%20App" target="_blank" class="whatsapp-float">
