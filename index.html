@@ -345,6 +345,41 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 </div>
 
+<!-- TAB: ADMIN PANEL -->
+<div id="page-admin" class="tab-page">
+<div class="app-header" style="background: linear-gradient(180deg, #333 0%, #1a1a1a 100%);">
+<h1>Admin Panel</h1>
+<p>Manage Products & Withdrawals</p>
+</div>
+<div class="content-area" style="padding-top:20px;">
+<div class="product-card">
+<h3>Add New Product</h3>
+<div class="input-group" style="margin-top:10px;">
+<label>Product Title</label>
+<input type="text" id="adm-p-title" placeholder="e.g. Gold Coin">
+</div>
+<div class="input-group">
+<label>Price (₹)</label>
+<input type="number" id="adm-p-price" placeholder="700">
+</div>
+<div class="input-group">
+<label>Daily Income (₹)</label>
+<input type="number" id="adm-p-daily" placeholder="61">
+</div>
+<div class="input-group">
+<label>Cycle Days</label>
+<input type="number" id="adm-p-days" placeholder="30">
+</div>
+<button class="btn-primary" onclick="addNewProductAdmin()">Publish Product</button>
+</div>
+
+<div class="section-title">Pending Withdrawal Requests</div>
+<div class="history-card" id="admin-withdrawals-list">
+<p style="font-size:12px; color:#888; text-align:center;">Loading pending withdrawals...</p>
+</div>
+</div>
+</div>
+
 <!-- WHATSAPP FLOATING SUPPORT BUTTON -->
 <a href="https://wa.me/918092703164?text=Hello%20Support,%20I%20need%20help%20with%20Tracker%20App" target="_blank" class="whatsapp-float">
 <span class="whatsapp-icon">💬</span>
@@ -368,6 +403,10 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div class="nav-item" onclick="switchTab('user')" id="nav-user">
 <span class="nav-icon">👤</span>
 <span>User</span>
+</div>
+<div class="nav-item" onclick="switchTab('admin')" id="nav-admin-btn" style="display: none;">
+<span class="nav-icon">⚙️</span>
+<span>Admin</span>
 </div>
 </div>
 
@@ -394,7 +433,6 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 <div style="font-size: 13px; color: #333; margin-bottom: 8px;">Scan & Pay: <b>₹<span id="qr-display-amt">0</span></b></div>
 
-<!-- Dynamic QR Image generated using Google Chart API based on user amount & UPI -->
 <div style="background: #fff; padding: 10px; display: inline-block; border: 1px solid #ddd; border-radius: 10px;">
 <img id="dynamic-qr-img" src="" alt="UPI QR Code" style="width: 180px; height: 180px; display: block;">
 </div>
@@ -479,6 +517,8 @@ appId: "1:542021217929:web:28c3a446b74fea61ff6058"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+const ADMIN_EMAIL = "ravikishankumar20019777@okicici.com";
 
 let currentUser = null;
 let userData = {};
@@ -610,6 +650,15 @@ currentUser = user;
 authScreen.style.display = "none";
 dashboardScreen.style.display = "block";
 
+// ADMIN BUTTON CHECK
+const adminBtn = document.getElementById("nav-admin-btn");
+if (user.email === ADMIN_EMAIL) {
+if(adminBtn) adminBtn.style.display = "block";
+loadAdminWithdrawals();
+} else {
+if(adminBtn) adminBtn.style.display = "none";
+}
+
 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
 if (docSnap.exists()) {
 userData = docSnap.data();
@@ -645,6 +694,82 @@ authScreen.style.display = "block";
 dashboardScreen.style.display = "none";
 }
 });
+
+// ADMIN PANEL: LOAD PENDING WITHDRAWALS
+function loadAdminWithdrawals() {
+const container = document.getElementById("admin-withdrawals-list");
+if(!container) return;
+
+onSnapshot(collection(db, "withdrawals"), (snapshot) => {
+let html = "";
+let count = 0;
+
+snapshot.forEach((docSnap) => {
+let data = docSnap.data();
+if(data.status === "pending") {
+count++;
+html += `
+<div class="history-item" style="flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px 0;">
+<div><strong>User Email:</strong> ${data.userEmail || 'N/A'}</div>
+<div><strong>Amount:</strong> ₹${data.amount}</div>
+<div style="font-size:11px; color:#555;">${data.payoutDetails}</div>
+<div style="display: flex; gap: 10px; margin-top: 5px; width: 100%;">
+<button onclick="updateWithdrawalStatus('${docSnap.id}', 'approved')" style="flex:1; background:#28a745; color:white; border:none; padding:6px; border-radius:6px; cursor:pointer; font-weight:bold;">Approve</button>
+<button onclick="updateWithdrawalStatus('${docSnap.id}', 'rejected')" style="flex:1; background:#dc3545; color:white; border:none; padding:6px; border-radius:6px; cursor:pointer; font-weight:bold;">Reject</button>
+</div>
+</div>
+`;
+}
+});
+
+if(count === 0) {
+container.innerHTML = `<p style="font-size:12px; color:#888; text-align:center;">No pending withdrawals found.</p>`;
+} else {
+container.innerHTML = html;
+}
+});
+}
+
+// ADMIN PANEL: APPROVE OR REJECT WITHDRAWAL
+window.updateWithdrawalStatus = async (reqId, status) => {
+try {
+await updateDoc(doc(db, "withdrawals", reqId), {
+status: status
+});
+alert(`Withdrawal request has been ${status}!`);
+} catch(e) {
+alert("Error updating status: " + e.message);
+}
+};
+
+// ADMIN PANEL: ADD NEW PRODUCT
+window.addNewProductAdmin = async () => {
+const title = document.getElementById("adm-p-title").value.trim();
+const price = parseFloat(document.getElementById("adm-p-price").value);
+const daily = parseFloat(document.getElementById("adm-p-daily").value);
+const days = parseInt(document.getElementById("adm-p-days").value);
+
+if(!title || !price || !daily || !days) {
+return alert("Sabhi fields bharein!");
+}
+
+const prodId = "prod_" + Date.now();
+try {
+await setDoc(doc(db, "products", prodId), {
+title: title,
+price: price,
+dailyIncome: daily,
+cycleDays: days
+});
+alert("Product successfully publish ho gaya!");
+document.getElementById("adm-p-title").value = "";
+document.getElementById("adm-p-price").value = "";
+document.getElementById("adm-p-daily").value = "";
+document.getElementById("adm-p-days").value = "";
+} catch(e) {
+alert("Error: " + e.message);
+}
+};
 
 function loadRechargeStatus(uid) {
 const q = query(collection(db, "recharges"), where("userId", "==", uid));
@@ -1007,7 +1132,7 @@ if(countdownInterval) clearInterval(countdownInterval);
 alert("Error: " + e.message);
 }
 };
-  
+
 // WITHDRAWAL MODAL & PAYOUT LOGIC
 window.togglePayoutFields = () => {
 const method = document.getElementById("payout-method").value;
@@ -1108,61 +1233,6 @@ document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active")
 document.getElementById("page-" + tab).classList.add("active-page");
 document.getElementById("nav-" + tab).classList.add("active");
 };
-
-// 1. Database se products load karke screen par dikhane ke liye
-function loadProducts() {
-const container = document.getElementById("products-container");
-if(!container) return;
-
-onSnapshot(collection(db, "products"), (snapshot) => {
-let html = "";
-if(snapshot.empty) {
-container.innerHTML = `<p style="text-align: center; color: #888; margin-top: 20px;">No products available yet.</p>`;
-return;
-}
-snapshot.forEach((docSnap) => {
-let p = docSnap.data();
-html += `
-<div class="product-card" style="background:#fff; padding:15px; margin-bottom:10px; border-radius:8px; border-left:4px solid #007bff;">
-<h3>${p.title}</h3>
-<div style="font-size:13px; color:#555; margin: 5px 0;">
-<span>Price: <b>₹${p.price}</b></span> |
-<span>Daily: <b>₹${p.dailyIncome}</b></span> |
-<span>Days: <b>${p.cycleDays}</b></span>
-</div>
-<button onclick="alert('Investing in ${p.title}')" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Invest Now</button>
-</div>`;
-});
-container.innerHTML = html;
-});
-}
-loadProducts();
-
-// 2. Admin Panel se naya product Database mein add karne ke liye
-window.addNewProductAdmin = async () => {
-const title = document.getElementById("adm-p-title").value.trim();
-const price = parseFloat(document.getElementById("adm-p-price").value);
-const daily = parseFloat(document.getElementById("adm-p-daily").value);
-const days = parseInt(document.getElementById("adm-p-days").value);
-
-if(!title || !price || !daily || !days) return alert("Sabhi fields bharein!");
-
-const prodId = "prod_" + Date.now();
-try {
-await setDoc(doc(db, "products", prodId), {
-title: title,
-price: price,
-dailyIncome: daily,
-cycleDays: days
-});
-alert("Product successfully publish ho gaya!");
-document.getElementById("adm-p-title").value = "";
-document.getElementById("adm-p-price").value = "";
-document.getElementById("adm-p-daily").value = "";
-document.getElementById("adm-p-days").value = "";
-} catch(e) { alert("Error: " + e.message); }
-};
-  
 </script>
 
 </body>
