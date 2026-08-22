@@ -231,7 +231,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div id="page-product" class="tab-page">
 <div class="app-header">
 <h1>Silver Collection</h1>
-<p>Buy Silver items & earn daily income</p>
+<p>Buy Silver items & claim daily income</p>
 </div>
 <div class="content-area">
 <div style="height: 25px;"></div>
@@ -246,6 +246,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div class="row-detail"><span>Daily Income</span><span class="val">₹61</span></div>
 <div class="row-detail"><span>Total Return</span><span class="val">₹1,890</span></div>
 <button class="btn-action" id="btn-buy-silver_chain" onclick="buyProduct('silver_chain', 700, 61)">Buy Silver Chain (₹700)</button>
+<button class="btn-action" id="btn-claim-silver_chain" style="display:none; background:#ffb703;" onclick="claimDailyIncome('silver_chain', 61)">Claim Daily Income (₹61)</button>
 </div>
 
 <div class="product-card">
@@ -258,6 +259,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div class="row-detail"><span>Daily Income</span><span class="val">₹90</span></div>
 <div class="row-detail"><span>Total Return</span><span class="val">₹2,520</span></div>
 <button class="btn-action" id="btn-buy-silver_coin_10g" onclick="buyProduct('silver_coin_10g', 1200, 90)">Buy Silver Coin (₹1,200)</button>
+<button class="btn-action" id="btn-claim-silver_coin_10g" style="display:none; background:#ffb703;" onclick="claimDailyIncome('silver_coin_10g', 90)">Claim Daily Income (₹90)</button>
 </div>
 
 <div class="product-card">
@@ -270,6 +272,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div class="row-detail"><span>Daily Income</span><span class="val">₹210</span></div>
 <div class="row-detail"><span>Total Return</span><span class="val">₹6,510</span></div>
 <button class="btn-action" id="btn-buy-silver_bracelet" onclick="buyProduct('silver_bracelet', 2100, 210)">Buy Silver Bracelet (₹2,100)</button>
+<button class="btn-action" id="btn-claim-silver_bracelet" style="display:none; background:#ffb703;" onclick="claimDailyIncome('silver_bracelet', 210)">Claim Daily Income (₹210)</button>
 </div>
 
 <div class="product-card">
@@ -282,6 +285,7 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 <div class="row-detail"><span>Daily Income</span><span class="val">₹310</span></div>
 <div class="row-detail"><span>Total Return</span><span class="val">₹11,000</span></div>
 <button class="btn-action" id="btn-buy-silver_coin_30g" onclick="buyProduct('silver_coin_30g', 5100, 310)">Buy Silver Coin (₹5,100)</button>
+<button class="btn-action" id="btn-claim-silver_coin_30g" style="display:none; background:#ffb703;" onclick="claimDailyIncome('silver_coin_30g', 310)">Claim Daily Income (₹310)</button>
 </div>
 </div>
 </div>
@@ -306,14 +310,18 @@ button.btn-primary { width: 100%; padding: 13px; background-color: #10a330; colo
 </div>
 
 <div class="section-title">Commission Rates</div>
-<div class="stats-grid">
-<div class="stat-card">
-<div class="stat-label">Level 1 Direct</div>
-<div class="stat-value" style="color:#28a745;">10%</div>
+<div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+<div class="stat-card" style="padding: 12px;">
+<div class="stat-label">Level 1 (Direct)</div>
+<div class="stat-value" style="color:#28a745; font-size:16px;">10%</div>
 </div>
-<div class="stat-card">
-<div class="stat-label">Level 2 Indirect</div>
-<div class="stat-value" style="color:#10a330;">5%</div>
+<div class="stat-card" style="padding: 12px;">
+<div class="stat-label">Level 2 (Indirect)</div>
+<div class="stat-value" style="color:#10a330; font-size:16px;">5%</div>
+</div>
+<div class="stat-card" style="padding: 12px;">
+<div class="stat-label">Level 3</div>
+<div class="stat-value" style="color:#ffb703; font-size:16px;">1%</div>
 </div>
 </div>
 </div>
@@ -624,7 +632,6 @@ totalDailyRate += (userData.activeProducts[key].dailyRate || 0);
 }
 document.getElementById("val-daily-earning").innerText = "₹" + totalDailyRate;
 
-checkAndAddDailyEarnings();
 updateProductUI();
 }
 });
@@ -746,85 +753,90 @@ teamContainer.innerHTML = html;
 });
 }
 
-// AUTOMATIC DAY-TO-DAY DAILY EARNING & CLAIMING FUNCTION
-async function checkAndAddDailyEarnings() {
-if (!userData.activeProducts) return;
-
-let currentBalance = userData.balance || 0;
-let additionalEarnings = 0;
-const now = Date.now();
-const activeProds = { ...userData.activeProducts };
-let hasChanges = false;
-
-for (let prodKey in activeProds) {
-let prod = activeProds[prodKey];
-if (prod.active) {
-let lastClaim = prod.lastClaimTime || prod.buyTime;
-let timePassed = now - lastClaim;
-let oneDayInMs = 24 * 60 * 60 * 1000; // 24 Hours
-
-if (timePassed >= oneDayInMs) {
-let daysEarned = Math.floor(timePassed / oneDayInMs);
-let earningToAdd = daysEarned * prod.dailyRate;
-
-additionalEarnings += earningToAdd;
-prod.lastClaimTime = lastClaim + (daysEarned * oneDayInMs);
-hasChanges = true;
-}
-}
-}
-
-if (hasChanges && additionalEarnings > 0) {
-try {
-await updateDoc(doc(db, "users", currentUser.uid), {
-balance: currentBalance + additionalEarnings,
-activeProducts: activeProds
-});
-alert(`🎉 Aapka Daily Income ₹${additionalEarnings} automatically aapke balance mein add kar diya gaya hai!`);
-} catch (e) {
-console.error("Error updating daily earnings: ", e.message);
-}
-}
-}
-
-// PRODUCT UI STATUS UPDATE
+// PRODUCT UI & MANUAL CLAIM BUTTON STATE UPDATE
 function updateProductUI() {
 const prods = userData.activeProducts || {};
 const items = ['silver_chain', 'silver_coin_10g', 'silver_bracelet', 'silver_coin_30g'];
+const now = Date.now();
+const oneDayInMs = 24 * 60 * 60 * 1000;
 
 items.forEach(item => {
 const badge = document.getElementById(`badge-${item}`);
-const btn = document.getElementById(`btn-buy-${item}`);
+const buyBtn = document.getElementById(`btn-buy-${item}`);
+const claimBtn = document.getElementById(`btn-claim-${item}`);
 
 if (prods[item] && prods[item].active) {
 if(badge) {
 badge.innerText = "Active";
 badge.className = "badge badge-active";
 }
-if(btn) {
-btn.innerText = "Already Purchased";
-btn.disabled = true;
-btn.style.background = "#d1d5db";
-btn.style.cursor = "not-allowed";
+if(buyBtn) buyBtn.style.display = "none";
+
+if(claimBtn) {
+claimBtn.style.display = "block";
+let lastClaim = prods[item].lastClaimTime || prods[item].buyTime;
+let timePassed = now - lastClaim;
+
+if (timePassed >= oneDayInMs) {
+claimBtn.innerText = `Claim Daily Income (₹${prods[item].dailyRate})`;
+claimBtn.disabled = false;
+claimBtn.style.background = "#ffb703";
+claimBtn.style.cursor = "pointer";
+} else {
+let timeLeftMin = Math.ceil((oneDayInMs - timePassed) / (1000 * 60));
+let hours = Math.floor(timeLeftMin / 60);
+let mins = timeLeftMin % 60;
+claimBtn.innerText = `Next Claim in ${hours}h ${mins}m`;
+claimBtn.disabled = true;
+claimBtn.style.background = "#d1d5db";
+claimBtn.style.cursor = "not-allowed";
+}
 }
 } else {
 if(badge) {
 badge.innerText = "Not Active";
 badge.className = "badge";
 }
-if(btn) {
-if(item === 'silver_chain') btn.innerText = "Buy Silver Chain (₹700)";
-if(item === 'silver_coin_10g') btn.innerText = "Buy Silver Coin (₹1,200)";
-if(item === 'silver_bracelet') btn.innerText = "Buy Silver Bracelet (₹2,100)";
-if(item === 'silver_coin_30g') btn.innerText = "Buy Silver Coin (₹5,100)";
-btn.disabled = false;
-btn.style.background = "#10a330";
-btn.style.cursor = "pointer";
+if(buyBtn) {
+buyBtn.style.display = "block";
+buyBtn.disabled = false;
+buyBtn.style.background = "#10a330";
 }
+if(claimBtn) claimBtn.style.display = "none";
 }
 });
 }
 
+// MANUAL CLAIM DAILY INCOME FUNCTION
+window.claimDailyIncome = async (prodKey, dailyRate) => {
+let activeProducts = userData.activeProducts || {};
+if (!activeProducts[prodKey] || !activeProducts[prodKey].active) return;
+
+let prod = activeProducts[prodKey];
+let now = Date.now();
+let oneDayInMs = 24 * 60 * 60 * 1000;
+let lastClaim = prod.lastClaimTime || prod.buyTime;
+
+if ((now - lastClaim) >= oneDayInMs) {
+prod.lastClaimTime = now;
+let newBalance = (userData.balance || 0) + dailyRate;
+
+try {
+await updateDoc(doc(db, "users", currentUser.uid), {
+balance: newBalance,
+activeProducts: activeProducts
+});
+alert(`🎉 Successfully claimed ₹${dailyRate}! Balance mein add ho gaye hain.`);
+updateProductUI();
+} catch (e) {
+alert("Error claiming income: " + e.message);
+}
+} else {
+alert("Abhi 24 ghante pure nahi hue hain!");
+}
+};
+
+// 3-LEVEL COMMISSION SYSTEM IN PRODUCT PURCHASE
 window.buyProduct = async (prodKey, price, dailyRate) => {
 const currentBalance = userData.balance || 0;
 if (currentBalance < price) {
@@ -848,16 +860,53 @@ balance: newBalance,
 activeProducts: activeProducts
 });
 
-if (userData.referredBy) {
-const q = query(collection(db, "users"), where("referralCode", "==", userData.referredBy));
-const querySnap = await getDocs(q);
-querySnap.forEach(async (inviterDoc) => {
-const inviterData = inviterDoc.data();
-const commission = price * 0.10;
-await updateDoc(doc(db, "users", inviterDoc.id), {
-balance: (inviterData.balance || 0) + commission,
-cashback: (inviterData.cashback || 0) + commission
+// --- 3-LEVEL COMMISSION DISTRIBUTION ---
+let currentReferrerCode = userData.referredBy;
+
+if (currentReferrerCode) {
+const q1 = query(collection(db, "users"), where("referralCode", "==", currentReferrerCode));
+const snap1 = await getDocs(q1);
+
+snap1.forEach(async (doc1) => {
+let user1Data = doc1.data();
+let comm1 = price * 0.10; // Level 1: 10%
+
+await updateDoc(doc(db, "users", doc1.id), {
+balance: (user1Data.balance || 0) + comm1,
+cashback: (user1Data.cashback || 0) + comm1
 });
+
+let level2ReferrerCode = user1Data.referredBy;
+if (level2ReferrerCode) {
+const q2 = query(collection(db, "users"), where("referralCode", "==", level2ReferrerCode));
+const snap2 = await getDocs(q2);
+
+snap2.forEach(async (doc2) => {
+let user2Data = doc2.data();
+let comm2 = price * 0.05; // Level 2: 5%
+
+await updateDoc(doc(db, "users", doc2.id), {
+balance: (user2Data.balance || 0) + comm2,
+cashback: (user2Data.cashback || 0) + comm2
+});
+
+let level3ReferrerCode = user2Data.referredBy;
+if (level3ReferrerCode) {
+const q3 = query(collection(db, "users"), where("referralCode", "==", level3ReferrerCode));
+const snap3 = await getDocs(q3);
+
+snap3.forEach(async (doc3) => {
+let user3Data = doc3.data();
+let comm3 = price * 0.01; // Level 3: 1%
+
+await updateDoc(doc(db, "users", doc3.id), {
+balance: (user3Data.balance || 0) + comm3,
+cashback: (user3Data.cashback || 0) + comm3
+});
+});
+}
+});
+}
 });
 }
 
